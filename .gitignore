@@ -102,5 +102,5 @@ fabric.properties
 
 host-config
 member-config
-host_*
-member_*
+host_*-*
+member_*-*
