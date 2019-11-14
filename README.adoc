@@ -1,0 +1,115 @@
+= Pre-requisites
+
+== Install AWS CLI
+
+You can find more information about how to install `aws` CLI [here](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html) OR Simply install using following bash commands:
+
+[source,bash]
+----
+curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "tmp/awscli-bundle.zip"
+unzip /tmp/awscli-bundle.zip
+sudo ./tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+----
+
+Verify that `aws cli` is installed correctly usig `aws --version`
+
+== Configure AWS
+
+=== Configuring Profiles
+
+==== Toolchain permanent cluster
+
+Toolchain AWS already has robot account `crt-robot`  with required minimum permissions to create Openshift cluster.
+With available access and secret key configure AWS profile by name `crt-robot` using following
+
+[source]
+----
+aws configure --profile crt-robot
+AWS Access Key ID [None]: AKIAI44QH8DHBEXAMPLE
+AWS Secret Access Key [None]: je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY
+Default region name [None]: us-east-2
+Default output format [None]: text
+----
+
+==== 48 Hrs temporary cluster
+
+If you want to setup toolchain on 48 hrs temporary cluster, you should configure AWS with profile `openshift-dev` using following
+
+[source]
+----
+aws configure --profile openshift-dev
+AWS Access Key ID [None]: AKIAI44QH8DHBEXAMPLE
+AWS Secret Access Key [None]: je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY
+Default region name [None]: us-east-2
+Default output format [None]: text
+----
+
+== Install openshift-installer
+We need to setup `openshift-install` binary to create Openshift cluster
+
+[source]
+----
+wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux-4.2.4.tar.gz -P /tmp/
+tar -xvf /tmp/openshift-install-linux-4.2.4.tar.gz
+sudo mv /tmp/openshift-install /usr/local/bin/
+----
+
+You can download latest openshift-installer from https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/
+
+== Set Required environment variables
+
+=== CLIENT_SECRET
+
+To setup RHD Identity Provider, you need to register a client with RHD and with client's secret, create a secret in `openshift-config` namespace to be used by OAuth cluster config.
+So to create required secret, user needs to set `CLIENT_SECRET` environment variable to it's base64 encoded value.
+
+[source]
+----
+export CLIENT_SECRET=base64_encoded_client_secret
+----
+
+=== PULL_SECRET
+We are storing host, member and 48 hrs temp clusters configuration files under `/config` directory, for which we need pull secrets to be set by environment varibale `PULL_SECRET`
+
+[source]
+----
+export PULL_SECRET='{"auths":{"cloud.openshift.com":{"auth":"HSADJDFJJLDFbhf345==","email":"toolchain@redhat.com"},"quay.io":{"auth":"jkfdsjfTH78==","email":"toolchain@redhat.com"},"registry.connect.redhat.com":{"auth":"jhfkjdjfjdADSDS398njdnfj==","email":"toolchain@redhat.com"},"registry.redhat.io":{"auth":"jdfjfdhfADSDSFDSF67dsgh==","email":"toolchain@redhat.com"}}}'
+----
+
+You can download/copy required pull_secret from https://cloud.redhat.com/openshift/install/aws/installer-provisioned
+
+==== SSH_PUBLIC_KEY
+We need to add ssh keys under authorized keys for all the nodes created by the installer, for which we are passing ssh public keys by setting environment variable `SSH_PUBLIC_KEY`
+
+[source]
+----
+export SSH_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== schacon@mylaptop.local"
+----
+
+== Setting up Toolchain on Host and Member cluster
+To setup a hosted toolchain on multiple clusters (currently we are using 2 clusters i.e. host and member), We need to do following things
+
+1. Create host and member cluster
+2. Setup RHD identity provider
+3. Create admin users with `cluster-admin` roles
+4. Deploy registration service, host-operator on host cluster
+5. Deploy member-operator on member cluster
+6. Create/setup KubeFedCluster
+
+
+=== Permanent Clusters
+In order to achieve all above things on permanent clusters use following
+
+[source,bash]
+----
+./setup_toolchain.sh
+----
+
+
+=== 48 Hrs Dev clusters
+In order to achieve all above things on temporary clusters for 48 hrs. use following
+
+[source,bash]
+----
+./setup_toolchain.sh -d
+----

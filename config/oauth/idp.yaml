@@ -1,0 +1,22 @@
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  annotations:
+  name: cluster
+spec:
+  identityProviders:
+  - mappingMethod: lookup
+    name: rhd
+    openID:
+      claims:
+        email:
+        - email
+        name:
+        - name
+        preferredUsername:
+        - preferred_username
+      clientID: crtoolchain
+      clientSecret:
+        name: rhd-idp-secret
+      issuer: https://developers.redhat.com/auth/realms/rhd
+    type: OpenID

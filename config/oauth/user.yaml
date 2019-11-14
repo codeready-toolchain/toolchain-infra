@@ -1,0 +1,22 @@
+apiVersion: user.openshift.io/v1
+groups: null
+identities: null
+kind: User
+metadata:
+  name: ${USER_NAME}
+---
+apiVersion: user.openshift.io/v1
+kind: Identity
+metadata:
+  name: rhd:${USER_ID_FROM_SUB_CLAIM}
+providerName: rhd
+providerUserName: ${USER_ID_FROM_SUB_CLAIM}
+---
+apiVersion: user.openshift.io/v1
+kind: UserIdentityMapping
+metadata:
+  name: rhd:${USER_ID_FROM_SUB_CLAIM}
+user:
+  name: ${USER_NAME}
+identity:
+  name: rhd:${USER_ID_FROM_SUB_CLAIM}
