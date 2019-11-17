@@ -80,13 +80,13 @@ function deploy_operators() {
     PREVIOUS_DIR=$PWD
     cd $E2E_REPO_PATH
     oc new-project "$HOST_OPERATOR_NS"
-    NAME=host-operator OPERATOR_NAME=toolchain-host-operator NAMESPACE=$HOST_OPERATOR_NS STARTING_CSV=v0.0.96-4639d76 envsubst < $PREVIOUS_DIR/config/operator_deploy.yaml | oc apply -f -
+    NAME=host-operator OPERATOR_NAME=toolchain-host-operator NAMESPACE=$HOST_OPERATOR_NS envsubst < $PREVIOUS_DIR/config/operator_deploy.yaml | oc apply -f -
     make get-registration-service-repo login-as-admin
     make deploy-registration HOST_NS=$HOST_OPERATOR_NS REG_IMAGE_NAME=quay.io/codeready-toolchain/registration-service:v0.1
     cd $PREVIOUS_DIR
   else
     oc new-project "$MEMBER_OPERATOR_NS"
-    NAME=member-operator OPERATOR_NAME=toolchain-member-operator NAMESPACE=$MEMBER_OPERATOR_NS STARTING_CSV=v0.0.89-2bdffe0 envsubst < ./config/operator_deploy.yaml | oc apply -f -
+    NAME=member-operator OPERATOR_NAME=toolchain-member-operator NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/operator_deploy.yaml | oc apply -f -
   fi
 }
 
@@ -154,7 +154,7 @@ function create_users() {
 
 # https://docs.openshift.com/container-platform/4.2/applications/projects/configuring-project-creation.html#disabling-project-self-provisioning_configuring-project-creation
 function remove_self_provisioner_role() {
-  oc annotate clusterrolebinding.rbac self-provisioners 'rbac.authorization.kubernetes.io/autoupdate=false'
+ # oc annotate clusterrolebinding.rbac self-provisioners 'rbac.authorization.kubernetes.io/autoupdate=false'
   oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
   oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
 }

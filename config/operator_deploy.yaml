@@ -34,5 +34,4 @@ spec:
   name: ${OPERATOR_NAME}
   source: codeready-toolchain-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: ${OPERATOR_NAME}.${STARTING_CSV}
 ---
