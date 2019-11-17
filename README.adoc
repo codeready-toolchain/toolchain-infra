@@ -92,12 +92,14 @@ To setup a hosted toolchain on multiple clusters (currently we are using 2 clust
 1. Create host and member cluster
 2. Setup RHD identity provider
 3. Create admin users with `cluster-admin` roles
-4. Deploy registration service, host-operator on host cluster
-5. Deploy member-operator on member cluster
-6. Create/setup KubeFedCluster
+4. Remove self-provisioner cluster role from authenticated users
+5. Deploy registration service, host-operator on host cluster
+6. Deploy member-operator on member cluster
+7. Create/setup KubeFedCluster
 
+=== With Single step
 
-=== Permanent Clusters
+==== Permanent Clusters
 In order to achieve all above things on permanent clusters use following
 
 [source,bash]
@@ -105,11 +107,87 @@ In order to achieve all above things on permanent clusters use following
 ./setup_toolchain.sh
 ----
 
+===== Overwriting Operator's namespace
+If you want to overwrite operator's namespace, you can use respective flags like following:
 
-=== 48 Hrs Dev clusters
-In order to achieve all above things on temporary clusters for 48 hrs. use following
+[source,bash]
+----
+./setup_toolchain.sh -hs my_host_ns -mn my_member_ns
+----
+
+==== 48 Hrs Dev clusters
+In order to achieve all above things on temporary clusters for 48 hrs, use following
 
 [source,bash]
 ----
 ./setup_toolchain.sh -d
+----
+
+=== With Multiple steps
+==== With default namespace for operators
+If you want to try this setup one step at a time, you can follow the following steps:
+[source, bash]
+----
+./setup_cluster.sh -t host
+./setup_cluster.sh -t member
+./setup_kubefed.sh
+----
+
+==== With overriding operators namespace
+If you want to ovewrite operators namespace, you can use respective flags or environamene variable
+like following steps:
+[source, bash]
+----
+./setup_cluster.sh -t host -hs my_host_ns -mn my_member_ns
+./setup_cluster.sh -t member -hs my_host_ns -mn my_member_ns
+./setup_kubefed.sh
+MEMBER_OPERATOR_NS=my_member_ns HOST_OPERATOR_NS=my_host_ns ./setup_kubefed.sh
+----
+
+== Cleaning UP Default kubeadmin
+Once host and member clusters are setup with all required things and you confirm that all crt-admin can login and they have required access for cluster scoped resources
+you can remove default kube-admin user using following step:
+[source, bash]
+----
+oc delete secret kubeadmin -n kube-system
+----
+
+== Destroying cluster
+
+Make sure to export required AWS profile.
+- If your cluster is created for 48 hrs then `export AWS_PROFILE=openshift-dev`
+- If your cluster is permanant cluster, then `export AWS_PROFILE=crt-robot`
+
+=== From the directory which stores metadata for Openshift 4 Cluster
+
+[source,bash]
+----
+openshift-install destroy cluster
+----
+
+=== If you lost metadata required to destroy Openshift 4 Cluster
+
+If the OpenShift 4 cluster are deployed by installer and you lost the metadata, there is no way to delete the cluster using the OpenShift installer without the metadata
+In order to destroy the cluster using the installer, you should generate metadata.json file.
+
+==== Set required variables using following
+[source,bash]
+----
+CLUSTER_NAME=NAME
+AWS_REGION=REGION
+CLUSTER_UUID=$(oc get clusterversions.config.openshift.io version -o jsonpath='{.spec.clusterID}{"\n"}')
+INFRA_ID=$(oc get infrastructures.config.openshift.io cluster -o jsonpath='{.status.infrastructureName}{"\n"}')
+----
+
+==== Generate metadata.json
+[source,bash]
+----
+echo "{\"clusterName\":\"${CLUSTER_NAME}\",\"clusterID\":\"${CLUSTER_UUID}\",\"infraID\":\"${INFRA_ID}\",\"aws\":{\"region\":\"${AWS_REGION}\",\"identifier\":[{\"kubernetes.io/cluster/${INFRA_ID}\":\"owned\"},{\"openshiftClusterID\":\"${CLUSTER_UUID}\"}]}}" > metadata.json
+----
+
+==== Destroy cluster with the generated metadata.json file
+
+[source,bash]
+----
+openshift-install destroy cluster
 ----
