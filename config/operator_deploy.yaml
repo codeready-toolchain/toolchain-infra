@@ -1,0 +1,38 @@
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorSource
+metadata:
+  labels:
+    opsrc-provider: codeready-toolchain
+  name: codeready-toolchain-operators
+  namespace: openshift-marketplace
+spec:
+  authorizationToken: {}
+  displayName: CodeReady Toolchain Operators
+  endpoint: https://quay.io/cnr
+  publisher: Red Hat
+  registryNamespace: codeready-toolchain
+  type: appregistry
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: ${NAME}
+  namespace: ${NAMESPACE}
+spec:
+  targetNamespaces:
+    - ${NAMESPACE}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ${NAME}
+  namespace: ${NAMESPACE}
+spec:
+  channel: nightly
+  installPlanApproval: Automatic
+  name: ${OPERATOR_NAME}
+  source: codeready-toolchain-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ${OPERATOR_NAME}.${STARTING_CSV}
+---

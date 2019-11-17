@@ -3,8 +3,10 @@
 user_help() {
   echo "Setup Openshift Cluster"
   echo "options:"
-  echo "-t,   --type                    cluster type (host or member)"
-  echo "-d,   --dev-cluster-48-hrs      setting up toolchain 48 hrs temparory dev cluster"
+  echo "-t,   --type                  cluster type (host or member)"
+  echo "-mn,  --member-ns             namespace where member-operator is running"
+  echo "-hn,  --host-ns               namespace where host-operator is running"
+  echo "-d,   --dev-cluster-48-hrs    setting up toolchain 48 hrs temparory dev cluster"
   exit 0
 }
 
@@ -28,6 +30,16 @@ while test $# -gt 0; do
     CLUSTER_TYPE=$1
     shift
     ;;
+  -mn|--member-ns)
+    shift
+    MEMBER_OPERATOR_NS=$1
+    shift
+    ;;
+  -hn|--host-ns)
+    shift
+    HOST_OPERATOR_NS=$1
+    shift
+    ;;
   -d | --dev-cluster-48-hrs)
     DEV_CLUSTER=true
     shift
@@ -41,10 +53,6 @@ while test $# -gt 0; do
 done
 
 function validate_env() {
-  if [[ -z ${CLIENT_SECRET} ]]; then
-    echo "Environment variable 'CLIENT_SECRET' is not set. Please set RHD client secret to be used."
-    exit 1
-  fi
   if [[ -z ${PULL_SECRET} ]]; then
     echo "Environment variable 'PULL_SECRET' is not set. Please set it. You can download it from https://cloud.redhat.com/openshift/install/aws/installer-provisioned"
     exit 1
@@ -55,20 +63,31 @@ function validate_env() {
   fi
 }
 
-# ToDo Update it to use operatorsource
-function deploy_operators() {
-  E2E_REPO_PATH=/tmp/codeready-toolchain/toolchain-e2e
-  #git clone https://github.com/codeready-toolchain/toolchain-e2e.git ${E2E_REPO_PATH}
-  git clone https://github.com/dipak-pawar/toolchain-e2e.git ${E2E_REPO_PATH}
-  PREVIOUS_DIR=$PWD
-  cd $E2E_REPO_PATH
-  git checkout deploy_resources
-  if [[ ${CLUSTER_TYPE} == "host" ]]; then
-    make dev-deploy-host-services
-  else
-    make dev-deploy-member-services
+function assign_default_namespace_values {
+  if [[ -z ${MEMBER_OPERATOR_NS} ]]; then
+    export MEMBER_OPERATOR_NS=toolchain-member-operator
   fi
-  cd $PREVIOUS_DIR
+  if [[ -z ${HOST_OPERATOR_NS} ]]; then
+    export HOST_OPERATOR_NS=toolchain-host-operator
+  fi
+}
+
+function deploy_operators() {
+  if [[ ${CLUSTER_TYPE} == "host" ]]; then
+    E2E_REPO_PATH=/tmp/codeready-toolchain/toolchain-e2e
+    rm -rf ${E2E_REPO_PATH}
+    git clone https://github.com/codeready-toolchain/toolchain-e2e.git ${E2E_REPO_PATH}
+    PREVIOUS_DIR=$PWD
+    cd $E2E_REPO_PATH
+    oc new-project "$HOST_OPERATOR_NS"
+    NAME=host-operator OPERATOR_NAME=toolchain-host-operator NAMESPACE=$HOST_OPERATOR_NS STARTING_CSV=v0.0.96-4639d76 envsubst < $PREVIOUS_DIR/config/operator_deploy.yaml | oc apply -f -
+    make get-registration-service-repo login-as-admin
+    make deploy-registration HOST_NS=$HOST_OPERATOR_NS REG_IMAGE_NAME=quay.io/codeready-toolchain/registration-service:v0.1
+    cd $PREVIOUS_DIR
+  else
+    oc new-project "$MEMBER_OPERATOR_NS"
+    NAME=member-operator OPERATOR_NAME=toolchain-member-operator NAMESPACE=$MEMBER_OPERATOR_NS STARTING_CSV=v0.0.89-2bdffe0 envsubst < ./config/operator_deploy.yaml | oc apply -f -
+  fi
 }
 
 function setup_cluster() {
@@ -89,13 +108,14 @@ function setup_cluster() {
 
   echo "starting cluster installation"
   openshift-install create cluster --dir $CONFIG_MANIFESTS
+  rm -rf ${CLUSTER_TYPE}-config
   cp $PWD/$CONFIG_MANIFESTS/auth/kubeconfig ${CLUSTER_TYPE}-config
 }
 
 function login_to_cluster() {
   export KUBECONFIG=$PWD/$CONFIG_MANIFESTS/auth/kubeconfig
   SERVER_URL=$(oc whoami --show-server)
-  oc login --username=kubeadmin --password=$(cat $CONFIG_MANIFESTS/auth/kubeadmin-password)
+  #oc login --username=kubeadmin --password=$(cat $CONFIG_MANIFESTS/auth/kubeadmin-password)
 }
 
 function setup_idp() {
@@ -132,9 +152,22 @@ function create_users() {
   oc adm groups add-users crt-admins $USERS
 }
 
+# https://docs.openshift.com/container-platform/4.2/applications/projects/configuring-project-creation.html#disabling-project-self-provisioning_configuring-project-creation
+function remove_self_provisioner_role() {
+  oc annotate clusterrolebinding.rbac self-provisioners 'rbac.authorization.kubernetes.io/autoupdate=false'
+  oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
+  oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+}
+
 validate_env
+assign_default_namespace_values
 setup_cluster
 login_to_cluster
-setup_idp
+if [[ -z ${CLIENT_SECRET} ]]; then
+    echo "skippking RHD Identity Provider setup as environment variable 'CLIENT_SECRET' is not set"
+else
+    setup_idp
+fi
 create_users
+remove_self_provisioner_role
 deploy_operators
