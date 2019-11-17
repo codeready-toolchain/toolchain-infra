@@ -115,7 +115,6 @@ function setup_cluster() {
 function login_to_cluster() {
   export KUBECONFIG=$PWD/$CONFIG_MANIFESTS/auth/kubeconfig
   SERVER_URL=$(oc whoami --show-server)
-  #oc login --username=kubeadmin --password=$(cat $CONFIG_MANIFESTS/auth/kubeadmin-password)
 }
 
 function setup_idp() {
