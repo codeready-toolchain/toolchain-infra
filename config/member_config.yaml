@@ -7,9 +7,9 @@ compute:
     aws:
       type: m4.xlarge
       zones:
-      - us-east-2a
-      - us-east-2b
-      - us-east-2c
+      - us-east-1a
+      - us-east-1b
+      - us-east-1c
   replicas: 2
 controlPlane:
   hyperthreading: Enabled
@@ -18,9 +18,9 @@ controlPlane:
     aws:
       type: m4.large
       zones:
-      - us-east-2a
-      - us-east-2b
-      - us-east-2c
+      - us-east-1a
+      - us-east-1b
+      - us-east-1c
   replicas: 3
 metadata:
   creationTimestamp: null
@@ -35,7 +35,7 @@ networking:
   - 172.30.0.0/16
 platform:
   aws:
-    region: us-east-2
+    region: us-east-1
 pullSecret: '${PULL_SECRET}'
 sshKey: |
   ${SSH_PUBLIC_KEY}
