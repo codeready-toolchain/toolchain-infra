@@ -68,6 +68,16 @@ So to create required secret, user needs to set `CLIENT_SECRET` environment vari
 export CLIENT_SECRET=base64_encoded_client_secret
 ----
 
+=== ISSUER
+
+If you want to setup different Identity Provider, e.g. your hosted keycloak, you need to use the issuer URL which is publicly exposed route for your keycloak
+[source]
+----
+export ISSUER=your_issuer_url
+----
+
+If you haven't not set this variable, script will use default issuer i.e. "https://developers.redhat.com/auth/realms/rhd" which points for RHD
+
 === PULL_SECRET
 We are storing host, member and 48 hrs temp clusters configuration files under `/config` directory, for which we need pull secrets to be set by environment varibale `PULL_SECRET`
 
@@ -134,7 +144,7 @@ If you want to try this setup one step at a time, you can follow the following s
 ----
 
 ==== With overriding operators namespace
-If you want to ovewrite operators namespace, you can use respective flags or environamene variable
+If you want to overwrite operators namespace, you can use respective flags or environamene variable
 like following steps:
 [source, bash]
 ----

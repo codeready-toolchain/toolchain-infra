@@ -120,8 +120,12 @@ function login_to_cluster() {
 function setup_idp() {
   # setup RHD identity provider with required secret and oauth configuration
   echo "setting up RHD identity provider"
+  if [[ -z ${ISSUER} ]]; then
+    export ISSUER="https://developers.redhat.com/auth/realms/rhd"
+    echo "setting up default ISSUER url i.e. $ISSUER for Identity provider configuration"
+  fi
   CLIENT_SECRET=$CLIENT_SECRET envsubst <./config/oauth/rhd_idp_secret.yaml | oc apply -f -
-  oc apply -f ./config/oauth/idp.yaml
+  ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
 }
 
 function create_users() {

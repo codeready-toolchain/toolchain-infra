@@ -18,5 +18,5 @@ spec:
       clientID: crtoolchain
       clientSecret:
         name: rhd-idp-secret
-      issuer: https://developers.redhat.com/auth/realms/rhd
+      issuer: ${ISSUER}
     type: OpenID
