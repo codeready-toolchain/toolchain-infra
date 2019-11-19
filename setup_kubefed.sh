@@ -9,7 +9,7 @@ function assign_default_namespace_values() {
   fi
 }
 
-function setup_kubefed() {
+function setup_kubeconfig() {
   echo "setting up kubefed on host and member clusters"
   export KUBECONFIG=$PWD/host-config
   oc config rename-context admin host-admin
@@ -19,6 +19,9 @@ function setup_kubefed() {
   sed -i -e "s/name: admin/name: member-admin/g; s/user: admin/user: member-admin/g" $PWD/member-config
 
   export KUBECONFIG=$PWD/host-config:$PWD/member-config
+}
+
+function setup_kubefed() {
   curl -sSL https://raw.githubusercontent.com/codeready-toolchain/toolchain-common/master/scripts/add-cluster.sh | bash -s -- -t member -mn ${MEMBER_OPERATOR_NS} -hn ${HOST_OPERATOR_NS} -kc ${KUBECONFIG}
   curl -sSL https://raw.githubusercontent.com/codeready-toolchain/toolchain-common/master/scripts/add-cluster.sh | bash -s -- -t host -mn ${MEMBER_OPERATOR_NS} -hn ${HOST_OPERATOR_NS} -kc ${KUBECONFIG}
 }
@@ -47,6 +50,9 @@ function wait_for_resources_to_exists() {
 }
 
 assign_default_namespace_values
+setup_kubeconfig
+oc config use-context host-admin
 wait_for_resources_to_exists host-operator $HOST_OPERATOR_NS
+oc config use-context member-admin
 wait_for_resources_to_exists member-operator $MEMBER_OPERATOR_NS
 setup_kubefed
