@@ -58,22 +58,6 @@ You can download latest openshift-installer from https://mirror.openshift.com/pu
 
 == Set Required environment variables
 
-=== AWS_PROFILE
-
-Make sure to export required AWS profile.
-
-If your cluster is created for 48 hrs then:
-[source]
-----
-export AWS_PROFILE=openshift-dev
-----
-
-If your cluster is permanant cluster then:
-[source]
-----
-export AWS_PROFILE=crt-robot
-----
-
 === CLIENT_SECRET
 
 To setup RHD Identity Provider, you need to register a client with RHD and with client's secret, create a secret in `openshift-config` namespace to be used by OAuth cluster config.
@@ -181,6 +165,7 @@ oc delete secret kubeadmin -n kube-system
 == Destroying cluster
 
 Make sure to export required AWS profile.
+
 - If your cluster is created for 48 hrs then `export AWS_PROFILE=openshift-dev`
 - If your cluster is permanant cluster, then `export AWS_PROFILE=crt-robot`
 
