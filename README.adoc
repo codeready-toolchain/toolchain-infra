@@ -50,7 +50,7 @@ We need to setup `openshift-install` binary to create Openshift cluster
 [source]
 ----
 wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux-4.2.4.tar.gz -P /tmp/
-tar -xvf /tmp/openshift-install-linux-4.2.4.tar.gz
+tar -xvf /tmp/openshift-install-linux-4.2.4.tar.gz --directory /tmp
 sudo mv /tmp/openshift-install /usr/local/bin/
 ----
 
