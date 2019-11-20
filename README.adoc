@@ -60,7 +60,19 @@ You can download latest openshift-installer from https://mirror.openshift.com/pu
 
 === AWS_PROFILE
 
-Make sure to export required AWS profile. - If your cluster is created for 48 hrs then export AWS_PROFILE=openshift-dev - If your cluster is permanant cluster, then export AWS_PROFILE=crt-robot
+Make sure to export required AWS profile.
+
+If your cluster is created for 48 hrs then:
+[source]
+----
+export AWS_PROFILE=openshift-dev
+----
+
+If your cluster is permanant cluster then:
+[source]
+----
+export AWS_PROFILE=crt-robot
+----
 
 === CLIENT_SECRET
 
