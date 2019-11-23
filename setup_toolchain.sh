@@ -46,7 +46,7 @@ function assign_default_namespace_values {
 }
 
 function setup_cluster() {
-  echo "starting installtion of $1 cluster"
+  echo "starting installation of $1 cluster"
   exec ./setup_cluster.sh -t $1 -hn $2 -mn $3 $4
   echo "installation of $1 cluster is finished"
 }
