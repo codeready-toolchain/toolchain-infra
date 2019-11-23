@@ -58,7 +58,7 @@ function validate_env() {
     exit 1
   fi
   if [[ -z ${SSH_PUBLIC_KEY} ]]; then
-    echo "Please set 'SSH_PUBLIC_KEY' environment variable."
+    echo "Environment variable 'SSH_PUBLIC_KEY' is not set. Please set it."
     exit 1
   fi
 }
@@ -122,14 +122,14 @@ function setup_idp() {
   echo "setting up RHD identity provider"
   if [[ -z ${ISSUER} ]]; then
     export ISSUER="https://developers.redhat.com/auth/realms/rhd"
-    echo "setting up default ISSUER url i.e. $ISSUER for Identity provider configuration"
+    echo "setting up default ISSUER url i.e. $ISSUER for identity provider configuration"
   fi
   CLIENT_SECRET=$CLIENT_SECRET envsubst <./config/oauth/rhd_idp_secret.yaml | oc apply -f -
   ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
 }
 
 function create_users() {
-  echo "creating crt-admins groups and bind 'cluster-admin' clusterrole"
+  echo "creating crt-admins groups and binding 'cluster-admin' clusterrole"
   oc adm groups new crt-admins
   oc adm policy add-cluster-role-to-group --rolebinding-name=crt-cluster-admins cluster-admin crt-admins
 
@@ -167,7 +167,7 @@ assign_default_namespace_values
 setup_cluster
 login_to_cluster
 if [[ -z ${CLIENT_SECRET} ]]; then
-    echo "skippking RHD Identity Provider setup as environment variable 'CLIENT_SECRET' is not set"
+    echo "skipping RHD identity provider setup as environment variable 'CLIENT_SECRET' is not set"
 else
     setup_idp
 fi
