@@ -122,7 +122,7 @@ function setup_idp() {
   echo "setting up RHD identity provider"
   if [[ -z ${ISSUER} ]]; then
     export ISSUER="https://sso.redhat.com/auth/realms/redhat-external"
-    echo "setting up default ISSUER url i.e. $ISSUER for Identity provider configuration"
+    echo "setting up default ISSUER url i.e. $ISSUER for identity provider configuration"
   fi
   CLIENT_SECRET=$CLIENT_SECRET envsubst <./config/oauth/rhd_idp_secret.yaml | oc apply -f -
   ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
