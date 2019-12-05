@@ -1,6 +1,6 @@
 = Pre-requisites
 
-== Install AWS CLI
+== Installing AWS CLI
 
 You can find more information about how to install `aws` CLI [here](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html) OR Simply install using following bash commands:
 
@@ -11,16 +11,16 @@ unzip /tmp/awscli-bundle.zip
 sudo ./tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 ----
 
-Verify that `aws cli` is installed correctly usig `aws --version`
+Verify that `aws cli` is installed correctly using `aws --version`
 
 == Configure AWS
 
 === Configuring Profiles
 
-==== Toolchain permanent cluster
+==== Toolchain Permanent Cluster
 
-Toolchain AWS already has robot account `crt-robot`  with required minimum permissions to create Openshift cluster.
-With available access and secret key configure AWS profile by name `crt-robot` using following
+Toolchain AWS already has a robot account `crt-robot`  with required minimum permissions to create an Openshift cluster.
+With available access and a secret key, configure AWS profile by name `crt-robot` using the following:
 
 [source]
 ----
@@ -31,9 +31,9 @@ Default region name [None]: us-east-2
 Default output format [None]: text
 ----
 
-==== 48 Hrs temporary cluster
+==== 48 Hrs Temporary Cluster
 
-If you want to setup toolchain on 48 hrs temporary cluster, you should configure AWS with profile `openshift-dev` using following
+If you want to setup toolchain on a 48 hrs temporary cluster, you should configure AWS with profile `openshift-dev` using following:
 
 [source]
 ----
@@ -44,8 +44,8 @@ Default region name [None]: us-east-2
 Default output format [None]: text
 ----
 
-== Install openshift-installer
-We need to setup `openshift-install` binary to create Openshift cluster
+== Installing openshift-installer
+We need to setup the `openshift-install` binary to create an Openshift cluster
 
 [source]
 ----
@@ -54,14 +54,14 @@ tar -xvf /tmp/openshift-install-linux-4.2.4.tar.gz --directory /tmp
 sudo mv /tmp/openshift-install /usr/local/bin/
 ----
 
-You can download latest openshift-installer from https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/
+You can download the latest openshift-installer from https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/
 
-== Set Required environment variables
+== Setting Required Environment Variables
 
 === CLIENT_SECRET
 
 To setup RHD Identity Provider, you need to register a client with RHD and with client's secret, create a secret in `openshift-config` namespace to be used by OAuth cluster config.
-So to create required secret, user needs to set `CLIENT_SECRET` environment variable to it's base64 encoded value.
+To create the required secret, the user needs to set the `CLIENT_SECRET` environment variable to its base64 encoded value.
 
 [source]
 ----
@@ -70,26 +70,26 @@ export CLIENT_SECRET=base64_encoded_client_secret
 
 === ISSUER
 
-If you want to setup different Identity Provider, e.g. your hosted keycloak, you need to use the issuer URL which is publicly exposed route for your keycloak
+If you want to setup a different Identity Provider, e.g. your hosted keycloak, you need to use the issuer URL which is a publicly exposed route for your keycloak
 [source]
 ----
 export ISSUER=your_issuer_url
 ----
 
-If you haven't not set this variable, script will use default issuer i.e. "https://sso.redhat.com/auth/realms/redhat-external" which points for RH SSO
+If you have not set this variable, script will use default issuer i.e. "https://sso.redhat.com/auth/realms/redhat-external" which points for RH SSO
 
 === PULL_SECRET
-We are storing host, member and 48 hrs temp clusters configuration files under `/config` directory, for which we need pull secrets to be set by environment varibale `PULL_SECRET`
+We are storing host, member and 48 hrs temp clusters configuration files under `/config` directory, for which we need pull secrets to be set by the environment varibale `PULL_SECRET`
 
 [source]
 ----
 export PULL_SECRET='{"auths":{"cloud.openshift.com":{"auth":"HSADJDFJJLDFbhf345==","email":"toolchain@redhat.com"},"quay.io":{"auth":"jkfdsjfTH78==","email":"toolchain@redhat.com"},"registry.connect.redhat.com":{"auth":"jhfkjdjfjdADSDS398njdnfj==","email":"toolchain@redhat.com"},"registry.redhat.io":{"auth":"jdfjfdhfADSDSFDSF67dsgh==","email":"toolchain@redhat.com"}}}'
 ----
 
-You can download/copy required pull_secret from https://cloud.redhat.com/openshift/install/aws/installer-provisioned
+You can download/copy the required pull_secret from https://cloud.redhat.com/openshift/install/aws/installer-provisioned
 
 ==== SSH_PUBLIC_KEY
-We need to add ssh keys under authorized keys for all the nodes created by the installer, for which we are passing ssh public keys by setting environment variable `SSH_PUBLIC_KEY`
+We need to add ssh keys under authorized keys for all the nodes created by the installer for which we are passing ssh public keys by setting the environment variable `SSH_PUBLIC_KEY`
 
 [source]
 ----
@@ -97,44 +97,44 @@ export SSH_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIp
 ----
 
 == Setting up Toolchain on Host and Member cluster
-To setup a hosted toolchain on multiple clusters (currently we are using 2 clusters i.e. host and member), We need to do following things
+To setup a hosted toolchain on multiple clusters (currently we are using 2 clusters i.e. host and member), we need to do following:
 
 1. Create host and member cluster
-2. Setup RHD identity provider
+2. Setup RHD Identity Provider
 3. Create admin users with `cluster-admin` roles
 4. Remove self-provisioner cluster role from authenticated users
-5. Deploy registration service, host-operator on host cluster
+5. Deploy registration service and host-operator on host cluster
 6. Deploy member-operator on member cluster
 7. Create/setup KubeFedCluster
 
-=== With Single step
+=== With Single Step
 
 ==== Permanent Clusters
-In order to achieve all above things on permanent clusters use following
+In order to achieve all of the above on permanent clusters use the following:
 
 [source,bash]
 ----
 ./setup_toolchain.sh
 ----
 
-===== Overwriting Operator's namespace
-If you want to overwrite operator's namespace, you can use respective flags like following:
+===== Overwriting Operator's Namespace
+If you want to overwrite the operator's namespace, you can use respective flags such as the following:
 
 [source,bash]
 ----
 ./setup_toolchain.sh -hs my_host_ns -mn my_member_ns
 ----
 
-==== 48 Hrs Dev clusters
-In order to achieve all above things on temporary clusters for 48 hrs, use following
+==== 48 Hrs Dev Clusters
+In order to achieve all of the above on temporary clusters for 48 hrs, use the following:
 
 [source,bash]
 ----
 ./setup_toolchain.sh -d
 ----
 
-=== With Multiple steps
-==== With default namespace for operators
+=== With Multiple Steps
+==== With Default Namespace for Operators
 If you want to try this setup one step at a time, you can follow the following steps:
 [source, bash]
 ----
@@ -143,8 +143,8 @@ If you want to try this setup one step at a time, you can follow the following s
 ./setup_kubefed.sh
 ----
 
-==== With overriding operators namespace
-If you want to overwrite operators namespace, you can use respective flags or environamene variable
+==== With Overriding an Operator's Namespace
+If you want to overwrite an operator's namespace, you can use the respective flags or environamene variable
 like following steps:
 [source, bash]
 ----
@@ -154,34 +154,32 @@ like following steps:
 MEMBER_OPERATOR_NS=my_member_ns HOST_OPERATOR_NS=my_host_ns ./setup_kubefed.sh
 ----
 
-== Cleaning UP Default kubeadmin
-Once host and member clusters are setup with all required things and you confirm that all crt-admin can login and they have required access for cluster scoped resources
-you can remove default kube-admin user using following step:
+== Cleaning Up Default Kubeadmin
+Once host and member clusters are setup with all the required things and you confirm that crt-admin can login and they have required access for cluster scoped resources you can remove the default kube-admin user using the following step:
 [source, bash]
 ----
 oc delete secret kubeadmin -n kube-system
 ----
 
-== Destroying cluster
+== Destroying Cluster
 
 Make sure to export required AWS profile.
 
 - If your cluster is created for 48 hrs then `export AWS_PROFILE=openshift-dev`
 - If your cluster is permanant cluster, then `export AWS_PROFILE=crt-robot`
 
-=== From the directory which stores metadata for Openshift 4 Cluster
+=== From the Directory Which Stores Metadata for Openshift 4 Cluster
 
 [source,bash]
 ----
 openshift-install destroy cluster
 ----
 
-=== If you lost metadata required to destroy Openshift 4 Cluster
+=== If You Lost Metadata Required to Destroy Openshift 4 Cluster
 
-If the OpenShift 4 cluster are deployed by installer and you lost the metadata, there is no way to delete the cluster using the OpenShift installer without the metadata
-In order to destroy the cluster using the installer, you should generate metadata.json file.
+If the OpenShift 4 cluster is deployed by the installer and you lost the metadata, there is no way to delete the cluster using the OpenShift installer without the metadata. In order to destroy the cluster using the installer, you should generate a metadata.json file.
 
-==== Set required variables using following
+==== Set Required Variables Using the Following
 [source,bash]
 ----
 CLUSTER_NAME=NAME
@@ -196,7 +194,7 @@ INFRA_ID=$(oc get infrastructures.config.openshift.io cluster -o jsonpath='{.sta
 echo "{\"clusterName\":\"${CLUSTER_NAME}\",\"clusterID\":\"${CLUSTER_UUID}\",\"infraID\":\"${INFRA_ID}\",\"aws\":{\"region\":\"${AWS_REGION}\",\"identifier\":[{\"kubernetes.io/cluster/${INFRA_ID}\":\"owned\"},{\"openshiftClusterID\":\"${CLUSTER_UUID}\"}]}}" > metadata.json
 ----
 
-==== Destroy cluster with the generated metadata.json file
+==== Destroy Cluster With the Generated metadata.json File
 
 [source,bash]
 ----

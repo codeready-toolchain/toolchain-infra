@@ -58,7 +58,7 @@ function validate_env() {
     exit 1
   fi
   if [[ -z ${SSH_PUBLIC_KEY} ]]; then
-    echo "Please set 'SSH_PUBLIC_KEY' environment variable."
+    echo "Environment variable 'SSH_PUBLIC_KEY' is not set. Please set it."
     exit 1
   fi
 }
@@ -129,7 +129,7 @@ function setup_idp() {
 }
 
 function create_users() {
-  echo "creating crt-admins groups and bind 'cluster-admin' clusterrole"
+  echo "creating crt-admins groups and binding 'cluster-admin' clusterrole"
   oc adm groups new crt-admins
   oc adm policy add-cluster-role-to-group --rolebinding-name=crt-cluster-admins cluster-admin crt-admins
 
@@ -167,7 +167,7 @@ assign_default_namespace_values
 setup_cluster
 login_to_cluster
 if [[ -z ${CLIENT_SECRET} ]]; then
-    echo "skippking RHD Identity Provider setup as environment variable 'CLIENT_SECRET' is not set"
+    echo "skipping RHD identity provider setup as environment variable 'CLIENT_SECRET' is not set"
 else
     setup_idp
 fi
