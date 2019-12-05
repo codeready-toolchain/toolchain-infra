@@ -121,7 +121,7 @@ function setup_idp() {
   # setup RHD identity provider with required secret and oauth configuration
   echo "setting up RHD identity provider"
   if [[ -z ${ISSUER} ]]; then
-    export ISSUER="https://developers.redhat.com/auth/realms/rhd"
+    export ISSUER="https://sso.redhat.com/auth/realms/redhat-external"
     echo "setting up default ISSUER url i.e. $ISSUER for Identity provider configuration"
   fi
   CLIENT_SECRET=$CLIENT_SECRET envsubst <./config/oauth/rhd_idp_secret.yaml | oc apply -f -
@@ -135,12 +135,12 @@ function create_users() {
 
   declare -A users
   users=(
-    [alkazako-crtadmin]=06abfd61-9cee-4705-b0cd-5423186e9153
-    [dpawar-crtadmin]=18c2b531-50a0-4ce9-95bb-2090db5feca1
-    [mjobanek-crtadmin]=18858c97-3bd4-43fe-9aa8-14ce22265119
-    [nvirani-crtadmin]=2be89467-f2f1-4e14-b1ae-3bf84c8cef52
-    [tkurian-crtadmin]=88b195e7-b064-41b7-8fb5-67d640c3703c
-    [xcoulon-crtadmin]=b82cedcb-1600-4d0a-a49c-0e149e626733
+    [alkazako-crtadmin]=52787588
+    #[dpawar-crtadmin]=18c2b531-50a0-4ce9-95bb-2090db5feca1
+    #[mjobanek-crtadmin]=18858c97-3bd4-43fe-9aa8-14ce22265119
+    #[nvirani-crtadmin]=2be89467-f2f1-4e14-b1ae-3bf84c8cef52
+    #[tkurian-crtadmin]=88b195e7-b064-41b7-8fb5-67d640c3703c
+    #[xcoulon-crtadmin]=b82cedcb-1600-4d0a-a49c-0e149e626733
   )
   USERS=""
   for i in "${!users[@]}"; do

@@ -9,10 +9,6 @@ spec:
     name: rhd
     openID:
       claims:
-        email:
-        - email
-        name:
-        - name
         preferredUsername:
         - preferred_username
       clientID: crtoolchain
