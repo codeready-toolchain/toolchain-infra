@@ -121,38 +121,19 @@ function setup_idp() {
   # setup RHD identity provider with required secret and oauth configuration
   echo "setting up RHD identity provider"
   if [[ -z ${ISSUER} ]]; then
-    export ISSUER="https://developers.redhat.com/auth/realms/rhd"
+    export ISSUER="https://sso.redhat.com/auth/realms/redhat-external"
     echo "setting up default ISSUER url i.e. $ISSUER for identity provider configuration"
   fi
   CLIENT_SECRET=$CLIENT_SECRET envsubst <./config/oauth/rhd_idp_secret.yaml | oc apply -f -
   ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
 }
 
-function create_users() {
+function create_crt_admins() {
   echo "creating crt-admins groups and binding 'cluster-admin' clusterrole"
   oc adm groups new crt-admins
   oc adm policy add-cluster-role-to-group --rolebinding-name=crt-cluster-admins cluster-admin crt-admins
 
-  declare -A users
-  users=(
-    [alkazako-crtadmin]=06abfd61-9cee-4705-b0cd-5423186e9153
-    [dpawar-crtadmin]=18c2b531-50a0-4ce9-95bb-2090db5feca1
-    [mjobanek-crtadmin]=18858c97-3bd4-43fe-9aa8-14ce22265119
-    [nvirani-crtadmin]=2be89467-f2f1-4e14-b1ae-3bf84c8cef52
-    [tkurian-crtadmin]=88b195e7-b064-41b7-8fb5-67d640c3703c
-    [xcoulon-crtadmin]=b82cedcb-1600-4d0a-a49c-0e149e626733
-  )
-  USERS=""
-  for i in "${!users[@]}"; do
-    USER_NAME=$i
-    USER_ID_FROM_SUB_CLAIM=${users[$i]}
-    USER_NAME=$USER_NAME USER_ID_FROM_SUB_CLAIM=$USER_ID_FROM_SUB_CLAIM envsubst <./config/oauth/user.yaml | oc apply -f -
-    USERS+="$USER_NAME "
-  done
-  USERS="${USERS%%*( )}"
-
-  # Add this users under crt-admins groups
-  oc adm groups add-users crt-admins $USERS
+  . create_users.sh
 }
 
 # https://docs.openshift.com/container-platform/4.2/applications/projects/configuring-project-creation.html#disabling-project-self-provisioning_configuring-project-creation
@@ -171,6 +152,6 @@ if [[ -z ${CLIENT_SECRET} ]]; then
 else
     setup_idp
 fi
-create_users
+create_crt_admins
 remove_self_provisioner_role
 deploy_operators

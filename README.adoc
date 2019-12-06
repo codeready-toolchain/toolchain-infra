@@ -76,7 +76,7 @@ If you want to setup a different Identity Provider, e.g. your hosted keycloak, y
 export ISSUER=your_issuer_url
 ----
 
-If you have not set this variable, the script will use the default issuer i.e. "https://developers.redhat.com/auth/realms/rhd" which points for RHD
+If you have not set this variable, script will use default issuer i.e. "https://sso.redhat.com/auth/realms/redhat-external" which points for RH SSO
 
 === PULL_SECRET
 We are storing host, member and 48 hrs temp clusters configuration files under `/config` directory, for which we need pull secrets to be set by the environment varibale `PULL_SECRET`
