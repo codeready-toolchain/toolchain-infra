@@ -128,30 +128,12 @@ function setup_idp() {
   ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
 }
 
-function create_users() {
+function create_crt_admins() {
   echo "creating crt-admins groups and binding 'cluster-admin' clusterrole"
   oc adm groups new crt-admins
   oc adm policy add-cluster-role-to-group --rolebinding-name=crt-cluster-admins cluster-admin crt-admins
 
-  declare -A users
-  users=(
-    [alkazako-crtadmin]=52787588
-    [mjobanek-crtadmin]=52791559
-    [xcoulon-crtadmin]=52753083
-    #[nvirani-crtadmin]=
-    #[tkurian-crtadmin]=
-  )
-  USERS=""
-  for i in "${!users[@]}"; do
-    USER_NAME=$i
-    USER_ID_FROM_SUB_CLAIM=${users[$i]}
-    USER_NAME=$USER_NAME USER_ID_FROM_SUB_CLAIM=$USER_ID_FROM_SUB_CLAIM envsubst <./config/oauth/user.yaml | oc apply -f -
-    USERS+="$USER_NAME "
-  done
-  USERS="${USERS%%*( )}"
-
-  # Add this users under crt-admins groups
-  oc adm groups add-users crt-admins $USERS
+  . create_users.sh
 }
 
 # https://docs.openshift.com/container-platform/4.2/applications/projects/configuring-project-creation.html#disabling-project-self-provisioning_configuring-project-creation
@@ -170,6 +152,6 @@ if [[ -z ${CLIENT_SECRET} ]]; then
 else
     setup_idp
 fi
-create_users
+create_crt_admins
 remove_self_provisioner_role
 deploy_operators

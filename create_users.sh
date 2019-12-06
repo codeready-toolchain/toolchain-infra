@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 function create_users() {
   declare -A users
   users=(
