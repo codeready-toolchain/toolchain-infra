@@ -83,6 +83,7 @@ function deploy_operators() {
     NAME=host-operator OPERATOR_NAME=toolchain-host-operator NAMESPACE=$HOST_OPERATOR_NS envsubst < $PREVIOUS_DIR/config/operator_deploy.yaml | oc apply -f -
     make get-registration-service-repo login-as-admin
     make deploy-registration HOST_NS=$HOST_OPERATOR_NS REG_IMAGE_NAME=quay.io/codeready-toolchain/registration-service:v0.1
+    oc apply -f $PREVIOUS_DIR/config/reg_service_route.yaml
     cd $PREVIOUS_DIR
   else
     oc new-project "$MEMBER_OPERATOR_NS"
