@@ -133,6 +133,15 @@ In order to achieve all of the above on temporary clusters for 48 hrs, use the f
 ./setup_toolchain.sh -d
 ----
 
+==== Installing Let’s Encrypt Certificates
+If you don't have certificates yet you have to request them first. See https://blog.openshift.com/requesting-and-installing-lets-encrypt-certificates-for-openshift-4/ for details.
+
+To install the requested certificates, use the following after setting up the clusters:
+[source,bash]
+----
+./install_certs.sh
+----
+
 === With Multiple Steps
 ==== With Default Namespace for Operators
 If you want to try this setup one step at a time, you can follow the following steps:
