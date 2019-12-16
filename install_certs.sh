@@ -14,7 +14,7 @@
 # ${HOME}/acme.sh/acme.sh --issue -d ${LE_API} -d *.${LE_WILDCARD} --dns dns_aws
 
 function setup_kubeconfig() {
-  echo "setting up kubefed on host and member clusters"
+  echo "setting up kubeconfig files for both clusters host and member"
   export KUBECONFIG=$PWD/host-config
   oc config rename-context admin host-admin
   sed -i -e "s/name: admin/name: host-admin/g; s/user: admin/user: host-admin/g" $PWD/host-config
