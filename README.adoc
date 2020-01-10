@@ -142,6 +142,24 @@ To install the requested certificates, use the following after setting up the cl
 ./install_certs.sh
 ----
 
+==== Installing the Cluster Logging
+If you want to collect logs for all pods on the cluster, you can run the following script which will take care 
+of installting the Cluster Logging and Elasticsearch operators, and configure all the pieces (Fluentd, Collector, Elasticsearch and Kibana).
+
+[source,bash]
+----
+./setup_logging.sh
+----
+
+
+Once all pods in the `openshift-logging` are in `Running` state, you can access the Kibana dashboard
+available on:
+
+[source,bash]
+----
+`oc get routes/kibana -o jsonpath='https://{.spec.host}'`
+----
+
 === With Multiple Steps
 ==== With Default Namespace for Operators
 If you want to try this setup one step at a time, you can follow the following steps:

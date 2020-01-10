@@ -4,19 +4,21 @@ metadata:
   name: instance
   namespace: openshift-logging
 spec:
+  managementState: Managed
   collection:
     logs:
+      type: fluentd
       fluentd:
         resources: null
       rsyslog:
         resources: null
-      type: fluentd
   curation:
+    type: curator
     curator:
       resources: null
       schedule: 30 3 * * *
-    type: curator
   logStore:
+    type: elasticsearch
     elasticsearch:
       nodeCount: 2
       redundancyPolicy: SingleRedundancy
@@ -29,12 +31,10 @@ spec:
       storage:
         size: 200G
         storageClassName: gp2
-    type: elasticsearch
-  managementState: Managed
   visualization:
+    type: kibana
     kibana:
       proxy:
         resources: null
       replicas: 1
       resources: null
-    type: kibana
