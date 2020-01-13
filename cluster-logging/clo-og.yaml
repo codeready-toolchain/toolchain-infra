@@ -5,6 +5,7 @@ metadata:
     olm.providedAPIs: ClusterLogging.v1.logging.openshift.io
   generateName: openshift-logging-
   generation: 1
+  namespace: openshift-logging
 spec:
   targetNamespaces:
   - openshift-logging

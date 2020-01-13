@@ -3,6 +3,7 @@ kind: Subscription
 metadata:
   generation: 1
   name: cluster-logging
+  namespace: openshift-logging
 spec:
   channel: "4.2"
   installPlanApproval: Automatic
