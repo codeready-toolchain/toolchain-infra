@@ -137,6 +137,10 @@ function create_crt_admins() {
   . create_users.sh
 }
 
+function setup_logging() {
+  . setup_logging.sh
+}
+
 # https://docs.openshift.com/container-platform/4.2/applications/projects/configuring-project-creation.html#disabling-project-self-provisioning_configuring-project-creation
 function remove_self_provisioner_role() {
  # oc annotate clusterrolebinding.rbac self-provisioners 'rbac.authorization.kubernetes.io/autoupdate=false'
@@ -156,3 +160,4 @@ fi
 create_crt_admins
 remove_self_provisioner_role
 deploy_operators
+setup_logging
