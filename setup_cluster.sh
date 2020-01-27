@@ -74,17 +74,9 @@ function assign_default_namespace_values {
 
 function deploy_operators() {
   if [[ ${CLUSTER_TYPE} == "host" ]]; then
-    E2E_REPO_PATH=/tmp/codeready-toolchain/toolchain-e2e
-    rm -rf ${E2E_REPO_PATH}
-    git clone https://github.com/codeready-toolchain/toolchain-e2e.git ${E2E_REPO_PATH}
-    PREVIOUS_DIR=$PWD
-    cd $E2E_REPO_PATH
     oc new-project "$HOST_OPERATOR_NS"
-    NAME=host-operator OPERATOR_NAME=toolchain-host-operator NAMESPACE=$HOST_OPERATOR_NS envsubst < $PREVIOUS_DIR/config/operator_deploy.yaml | oc apply -f -
-    make get-registration-service-repo login-as-admin
-    make deploy-registration HOST_NS=$HOST_OPERATOR_NS REG_IMAGE_NAME=quay.io/codeready-toolchain/registration-service:v0.1
-    oc apply -f $PREVIOUS_DIR/config/reg_service_route.yaml
-    cd $PREVIOUS_DIR
+    NAME=host-operator OPERATOR_NAME=toolchain-host-operator NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/operator_deploy.yaml | oc apply -f -
+    oc apply -f ./config/reg_service_route.yaml
   else
     oc new-project "$MEMBER_OPERATOR_NS"
     NAME=member-operator OPERATOR_NAME=toolchain-member-operator NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/operator_deploy.yaml | oc apply -f -
