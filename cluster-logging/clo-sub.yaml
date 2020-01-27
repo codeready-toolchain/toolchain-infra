@@ -9,4 +9,3 @@ spec:
   name: cluster-logging
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: clusterlogging.4.2.13-201912230557
