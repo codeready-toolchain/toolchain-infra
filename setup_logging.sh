@@ -11,7 +11,7 @@ function setup_logging() {
     # wait until the CRD is available before creating the CR
     NEXT_WAIT_TIME=0
     while [[ -z `oc get crd clusterloggings.logging.openshift.io 2>/dev/null` ]]; do
-		if [[ ${NEXT_WAIT_TIME} -eq 300 ]]; then \
+		if [[ ${NEXT_WAIT_TIME} -eq 300 ]]; then
 		   OPERATOR_GROUP_NAME=`oc get operatorgroups --output=name -n openshift-logging | grep "openshift-logging-"`
 		   SUBSCRIPTION_NAME=`oc get subscription --output=name -n openshift-logging | grep "cluster-logging"`
 		   echo "reached timeout of waiting for CRD clusterloggings.logging.openshift.io to be available in the cluster - see following info for debugging:"
