@@ -147,7 +147,7 @@ To install the requested certificates, use the following after setting up the cl
 NOTE:: this is installation is now part of the default cluster setup 
 
 If you want to collect logs for all pods on an existing cluster, you can run the following script which will take care 
-of installting the Cluster Logging and Elasticsearch operators, and configure all the pieces (Fluentd, Collector, Elasticsearch and Kibana). 
+of installing the Cluster Logging and Elasticsearch operators, and configure all the pieces (Fluentd, Collector, Elasticsearch and Kibana). 
 
 [source,bash]
 ----
