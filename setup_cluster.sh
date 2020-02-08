@@ -83,6 +83,13 @@ function deploy_operators() {
   fi
 }
 
+function setup_autoscaler() {
+  if [[ ${CLUSTER_TYPE} == "member" ]]; then
+    US_EAST_1C_MACHINE_SET=$(oc get machinesets -n openshift-machine-api -o jsonpath='{.items[2].metadata.name}')
+    MACHINE_SET=${US_EAST_1C_MACHINE_SET} envsubst <./config/autoscaler.yaml | oc apply -f -
+  fi
+}
+
 function setup_cluster() {
   echo "cluster type:$CLUSTER_TYPE"
   CONFIG_MANIFESTS=${CLUSTER_TYPE}_$(date +"%Y_%m_%d-%H_%M_%S")
@@ -153,3 +160,4 @@ create_crt_admins
 remove_self_provisioner_role
 deploy_operators
 setup_logging
+setup_autoscaler
