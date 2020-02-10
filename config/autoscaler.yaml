@@ -22,10 +22,10 @@ spec:
 apiVersion: "autoscaling.openshift.io/v1beta1"
 kind: "MachineAutoscaler"
 metadata:
-  name: "worker-us-east-1c"
+  name: "worker-us-east-1b"
   namespace: "openshift-machine-api"
 spec:
-  minReplicas: 0
+  minReplicas: 1
   maxReplicas: 10
   scaleTargetRef:
     apiVersion: machine.openshift.io/v1beta1

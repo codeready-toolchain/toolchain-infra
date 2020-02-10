@@ -85,7 +85,7 @@ function deploy_operators() {
 
 function setup_autoscaler() {
   if [[ ${CLUSTER_TYPE} == "member" ]]; then
-    US_EAST_1C_MACHINE_SET=$(oc get machinesets -n openshift-machine-api -o jsonpath='{.items[2].metadata.name}')
+    US_EAST_1C_MACHINE_SET=$(oc get machinesets -n openshift-machine-api -o jsonpath='{.items[1].metadata.name}')
     MACHINE_SET=${US_EAST_1C_MACHINE_SET} envsubst <./config/autoscaler.yaml | oc apply -f -
   fi
 }
