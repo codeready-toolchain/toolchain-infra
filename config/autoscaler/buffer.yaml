@@ -1,0 +1,37 @@
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: autoscaling-buffer
+value: -100
+globalDefault: false
+description: "This priority class is to be used by the autoscaling buffer pod only"
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: autoscaling-buffer
+  namespace: ${NAMESPACE}
+  labels:
+    app: autoscaling-buffer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoscaling-buffer
+  template:
+    metadata:
+      labels:
+        app: autoscaling-buffer
+    spec:
+      priorityClassName: autoscaling-buffer
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: autoscaling-buffer
+        image: gcr.io/google_containers/pause-amd64:3.0
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "1500m"
+          limits:
+            memory: "8Gi"
+            cpu: "1500m"

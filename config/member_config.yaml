@@ -10,7 +10,7 @@ compute:
       - us-east-1a
       - us-east-1b
       - us-east-1c
-  replicas: 2
+  replicas: 3
 controlPlane:
   hyperthreading: Enabled
   name: master
