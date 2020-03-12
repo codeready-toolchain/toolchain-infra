@@ -153,8 +153,7 @@ function setup_logging() {
 
 # https://docs.openshift.com/container-platform/4.2/applications/projects/configuring-project-creation.html#disabling-project-self-provisioning_configuring-project-creation
 function remove_self_provisioner_role() {
- # oc annotate clusterrolebinding.rbac self-provisioners 'rbac.authorization.kubernetes.io/autoupdate=false'
-  oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
+  oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null, "metadata": {"annotations":{"rbac.authorization.kubernetes.io/autoupdate": "false"}}}'
   oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
 }
 
