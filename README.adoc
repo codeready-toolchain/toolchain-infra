@@ -133,13 +133,33 @@ In order to achieve all of the above on temporary clusters for 48 hrs, use the f
 ./setup_toolchain.sh -d
 ----
 
-==== Installing Let’s Encrypt Certificates
-If you don't have certificates yet you have to request them first. See https://blog.openshift.com/requesting-and-installing-lets-encrypt-certificates-for-openshift-4/ for details.
+==== Installing and Renewing Let’s Encrypt Certificates
+Make sure you have acme.sh installed and AWS access credentials are set (see link:https://blog.openshift.com/requesting-and-installing-lets-encrypt-certificates-for-openshift-4/[this] for details):
 
-To install the requested certificates, use the following after setting up the clusters:
+1. Clone the acme.sh GitHub repository:
+----
+cd $HOME
+git clone https://github.com/neilpang/acme.sh
+cd acme.sh
+----
+[start=2]
+2. Update the file $HOME/acme.sh/dnsapi/dns_aws.sh with your AWS access credentials:
+----
+#!/usr/bin/env sh
+#AWS_ACCESS_KEY_ID="YOUR ACCESS KEY"
+#AWS_SECRET_ACCESS_KEY="YOUR SECRET ACCESS KEY"
+#This is the Amazon Route53 api wrapper for acme.sh
+[...]
+----
+To issue new certificates and install them to both host and member clsuters, use the following command:
 [source,bash]
 ----
 ./install_certs.sh
+----
+
+For renewing existing certificates:
+----
+./install_certs.sh --renew
 ----
 
 ==== Installing the Cluster Logging
