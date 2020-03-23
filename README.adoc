@@ -133,15 +133,6 @@ In order to achieve all of the above on temporary clusters for 48 hrs, use the f
 ./setup_toolchain.sh -d
 ----
 
-==== Installing Let’s Encrypt Certificates
-If you don't have certificates yet you have to request them first. See https://blog.openshift.com/requesting-and-installing-lets-encrypt-certificates-for-openshift-4/ for details.
-
-To install the requested certificates, use the following after setting up the clusters:
-[source,bash]
-----
-./install_certs.sh
-----
-
 ==== Installing the Cluster Logging
 
 NOTE:: this is installation is now part of the default cluster setup 
@@ -182,6 +173,35 @@ like following steps:
 ./setup_cluster.sh -t member -hs my_host_ns -mn my_member_ns
 ./setup_kubefed.sh
 MEMBER_OPERATOR_NS=my_member_ns HOST_OPERATOR_NS=my_host_ns ./setup_kubefed.sh
+----
+
+=== Installing and Renewing Let’s Encrypt Certificates
+Make sure you have acme.sh installed and AWS access credentials are set (see link:https://blog.openshift.com/requesting-and-installing-lets-encrypt-certificates-for-openshift-4/[this] for details):
+
+1. Clone the acme.sh GitHub repository:
+----
+cd $HOME
+git clone https://github.com/neilpang/acme.sh
+cd acme.sh
+----
+[start=2]
+2. Update the file $HOME/acme.sh/dnsapi/dns_aws.sh with your AWS access credentials:
+----
+#!/usr/bin/env sh
+#AWS_ACCESS_KEY_ID="YOUR ACCESS KEY"
+#AWS_SECRET_ACCESS_KEY="YOUR SECRET ACCESS KEY"
+#This is the Amazon Route53 api wrapper for acme.sh
+[...]
+----
+To issue new certificates and install them to both host and member clusters, use the following command:
+[source,bash]
+----
+./install_certs.sh
+----
+
+For renewing the existing certificates:
+----
+./install_certs.sh --renew
 ----
 
 == Cleaning Up Default Kubeadmin
