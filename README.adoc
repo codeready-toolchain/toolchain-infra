@@ -193,7 +193,7 @@ cd acme.sh
 #This is the Amazon Route53 api wrapper for acme.sh
 [...]
 ----
-To issue new certificates and install them to both host and member clsuters, use the following command:
+To issue new certificates and install them to both host and member clusters, use the following command:
 [source,bash]
 ----
 ./install_certs.sh
