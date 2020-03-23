@@ -17,7 +17,7 @@ user_help() {
   echo "      [...]"
   echo ""
   echo "options:"
-  echo "-r,  --renew             renew existing certificates instead of issues new ones"
+  echo "-r,  --renew             renew the existing certificates instead of issuing new ones"
   echo "-h,  --help              print this help message"
   exit 0
 }

@@ -199,7 +199,7 @@ To issue new certificates and install them to both host and member clusters, use
 ./install_certs.sh
 ----
 
-For renewing existing certificates:
+For renewing the existing certificates:
 ----
 ./install_certs.sh --renew
 ----
