@@ -107,7 +107,7 @@ function setup_tools_operators() {
     # namespace, operator-group, subscription
     oc apply -f ./config/operators/che/subscription.yaml
     while [[ "checlusters.org.eclipse.che" != $(oc get crd checlusters.org.eclipse.che -o jsonpath='{.metadata.name}') ]]; do
-      echo "waiting for Che Cluster CRD to be available..."
+      echo "waiting for CheCluster CRD to be available..."
       sleep 1
     done
     # CheCluster
@@ -119,14 +119,24 @@ function setup_tools_operators() {
     # subscription
     oc apply -f ./config/operators/pipelines/subscription.yaml
     while [[ "config.operator.tekton.dev" != $(oc get crd config.operator.tekton.dev -o jsonpath='{.metadata.name}') ]]; do
-      echo "waiting for Pipleine Config CRD to be available..."
+      echo "waiting for Pipleines Config CRD to be available..."
       sleep 1
     done
     # Swich to Manual
     oc patch subscription openshift-pipelines-operator -n openshift-operators -p '{"spec":{"installPlanApproval":"Manual"}}' --type=merge
 
     # Serverless
-    
+    # Serving
+    # namespace, subscription
+    oc apply -f ./config/operators/serverless/serving_subscription.yaml
+    while [[ "knativeservings.operator.knative.dev" != $(oc get crd knativeservings.operator.knative.dev -o jsonpath='{.metadata.name}') ]]; do
+      echo "waiting for KnativeServing CRD to be available..."
+      sleep 1
+    done
+    # KnativeServing
+    oc apply -f ./config/operators/pipelines/knative_serving.yaml
+    # Swich to Manual
+    oc patch subscription serverless-operator -n openshift-operators -p '{"spec":{"installPlanApproval":"Manual"}}' --type=merge
   fi
 }
 
