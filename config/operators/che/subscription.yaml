@@ -1,0 +1,29 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: toolchain-che
+spec:
+  finalizers:
+    - kubernetes
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  generateName: toolchain-che-
+  namespace: toolchain-che
+spec:
+  targetNamespaces:
+    - toolchain-che
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: eclipse-che
+  namespace: toolchain-che
+spec:
+  channel: stable
+  installPlanApproval: Automatic
+  name: eclipse-che
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: eclipse-che.v7.11.0

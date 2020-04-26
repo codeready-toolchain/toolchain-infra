@@ -1,0 +1,26 @@
+apiVersion: org.eclipse.che/v1
+kind: CheCluster
+metadata:
+  name: eclipse-che
+  namespace: toolchain-che
+spec:
+  auth:
+    externalIdentityProvider: false
+    openShiftoAuth: true
+  database:
+    externalDb: false
+  server:
+    customCheProperties:
+      CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT: <username>-code
+      CHE_WORKSPACE_DEFAULT__CPU__LIMIT__CORES: '0.2'
+      CHE_WORKSPACE_DEFAULT__CPU__REQUEST__CORES: '0.03'
+      CHE_WORKSPACE_SIDECAR_DEFAULT__CPU__LIMIT__CORES: '0.2'
+      CHE_WORKSPACE_SIDECAR_DEFAULT__CPU__REQUEST__CORES: '0.03'
+    selfSignedCert: false
+    tlsSupport: true
+    allowUserDefinedWorkspaceNamespaces: false
+    cheFlavor: che
+  storage:
+    preCreateSubPaths: true
+    pvcClaimSize: 5Gi
+    pvcStrategy: per-workspace
