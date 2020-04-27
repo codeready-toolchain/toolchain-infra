@@ -4,9 +4,9 @@ metadata:
   name: openshift-pipelines-operator
   namespace: openshift-operators
 spec:
-  channel: canary
+  channel: dev-preview
   installPlanApproval: Automatic
   name: openshift-pipelines-operator
   source: community-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: openshift-pipelines-operator.v0.11.0
+  startingCSV: openshift-pipelines-operator.v0.10.7
