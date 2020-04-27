@@ -2,9 +2,7 @@ kind: Namespace
 apiVersion: v1
 metadata:
   name: toolchain-che
-spec:
-  finalizers:
-    - kubernetes
+spec: {}
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup

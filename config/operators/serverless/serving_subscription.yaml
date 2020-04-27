@@ -2,9 +2,7 @@ kind: Namespace
 apiVersion: v1
 metadata:
   name: knative-serving
-spec:
-  finalizers:
-    - kubernetes
+spec: {}
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
