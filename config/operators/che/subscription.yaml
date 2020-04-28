@@ -7,7 +7,7 @@ spec: {}
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  generateName: toolchain-che-
+  name: toolchain-che
   namespace: toolchain-che
 spec:
   targetNamespaces:
