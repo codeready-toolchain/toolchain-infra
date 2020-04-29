@@ -101,6 +101,47 @@ function setup_autoscaler() {
   fi
 }
 
+function setup_tools_operators() {
+  if [[ ${CLUSTER_TYPE} == "member" ]]; then
+    # Che
+    # namespace, operator-group, subscription
+    oc apply -f ./config/operators/che/subscription.yaml
+    while [[ "checlusters.org.eclipse.che" != $(oc get crd checlusters.org.eclipse.che -o jsonpath='{.metadata.name}' 2>/dev/null) ]]; do
+      echo "waiting for CheCluster CRD to be available..."
+      sleep 1
+    done
+    # CheCluster
+    oc apply -f ./config/operators/che/che_cluster.yaml
+    echo "Che operator installed"
+
+    # Pipelines
+    # subscription
+    oc apply -f ./config/operators/pipelines/subscription.yaml
+    while [[ "config.operator.tekton.dev" != $(oc get crd config.operator.tekton.dev -o jsonpath='{.metadata.name}' 2>/dev/null) ]]; do
+      echo "waiting for Pipleines Config CRD to be available..."
+      sleep 1
+    done
+    echo "OpenShift Pipelines operator installed"
+
+    # Serverless
+    # Serving
+    # namespace, subscription
+    oc apply -f ./config/operators/serverless/serving_subscription.yaml
+    while [[ "knativeservings.operator.knative.dev" != $(oc get crd knativeservings.operator.knative.dev -o jsonpath='{.metadata.name}' 2>/dev/null) ]]; do
+      echo "waiting for KnativeServing CRD to be available..."
+      sleep 1
+    done
+    # KnativeServing
+    oc apply -f ./config/operators/serverless/knative_serving.yaml
+    echo "OpenShift Serverless operator installed"
+
+    # Swich to Manual
+    oc patch subscription eclipse-che -n toolchain-che -p '{"spec":{"installPlanApproval":"Manual"}}' --type=merge
+    oc patch subscription serverless-operator -n openshift-operators -p '{"spec":{"installPlanApproval":"Manual"}}' --type=merge
+    oc patch subscription openshift-pipelines-operator -n openshift-operators -p '{"spec":{"installPlanApproval":"Manual"}}' --type=merge
+  fi
+}
+
 function setup_cluster() {
   echo "cluster type:$CLUSTER_TYPE"
   CONFIG_MANIFESTS=${CLUSTER_TYPE}_$(date +"%Y_%m_%d-%H_%M_%S")
@@ -171,3 +212,4 @@ remove_self_provisioner_role
 deploy_operators
 setup_logging
 setup_autoscaler
+setup_tools_operators
