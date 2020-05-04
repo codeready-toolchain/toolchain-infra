@@ -10,9 +10,9 @@ metadata:
   name: serverless-operator
   namespace: openshift-operators
 spec:
-  channel: preview-4.3
+  channel: 4.3
   installPlanApproval: Automatic
   name: serverless-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: serverless-operator.v1.6.0
+  startingCSV: serverless-operator.v1.7.0
