@@ -18,9 +18,7 @@ controlPlane:
     aws:
       type: m5.xlarge
       zones:
-      - us-east-1a
       - us-east-1b
-      - us-east-1c
   replicas: 3
 metadata:
   creationTimestamp: null

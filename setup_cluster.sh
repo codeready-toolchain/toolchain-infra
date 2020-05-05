@@ -88,14 +88,16 @@ function setup_autoscaler() {
     oc apply -f ./config/autoscaler/autoscaler.yaml
 
     # worker-us-east-1a MachineAutoscaler 
-    MACHINE_SET_NAME=$(oc get machinesets -n openshift-machine-api -o jsonpath='{.items[0].metadata.name}')
-    MACHINE_SET=${MACHINE_SET_NAME} MACHINE_AUTOSCALER_NAME=worker-us-east-1a envsubst <./config/autoscaler/machine_autoscaler.yaml | oc apply -f -
+    # MACHINE_SET_NAME=$(oc get machinesets -n openshift-machine-api -o jsonpath='{.items[0].metadata.name}')
+    # MACHINE_SET=${MACHINE_SET_NAME} MACHINE_AUTOSCALER_NAME=worker-us-east-1a envsubst <./config/autoscaler/machine_autoscaler.yaml | oc apply -f -
+
     # worker-us-east-1b MachineAutoscaler 
     MACHINE_SET_NAME=$(oc get machinesets -n openshift-machine-api -o jsonpath='{.items[1].metadata.name}')
     MACHINE_SET=${MACHINE_SET_NAME} MACHINE_AUTOSCALER_NAME=worker-us-east-1b envsubst <./config/autoscaler/machine_autoscaler.yaml | oc apply -f -
+
     # worker-us-east-1c MachineAutoscaler 
-    MACHINE_SET_NAME=$(oc get machinesets -n openshift-machine-api -o jsonpath='{.items[2].metadata.name}')
-    MACHINE_SET=${MACHINE_SET_NAME} MACHINE_AUTOSCALER_NAME=worker-us-east-1c envsubst <./config/autoscaler/machine_autoscaler.yaml | oc apply -f -
+    # MACHINE_SET_NAME=$(oc get machinesets -n openshift-machine-api -o jsonpath='{.items[2].metadata.name}')
+    # MACHINE_SET=${MACHINE_SET_NAME} MACHINE_AUTOSCALER_NAME=worker-us-east-1c envsubst <./config/autoscaler/machine_autoscaler.yaml | oc apply -f -
 
     NAMESPACE=$MEMBER_OPERATOR_NS envsubst <./config/autoscaler/buffer.yaml | oc apply -f -
   fi
