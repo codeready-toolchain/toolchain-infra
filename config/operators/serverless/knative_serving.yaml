@@ -17,10 +17,6 @@ spec:
       stable-window: 60s
       tick-interval: 2s
     defaults:
-      revision-cpu-limit: 1000m
-      revision-cpu-request: 400m
-      revision-memory-limit: 200M
-      revision-memory-request: 100M
       revision-timeout-seconds: '300'
     deployment:
       registriesSkippingTagResolving: 'ko.local,dev.local'
