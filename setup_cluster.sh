@@ -144,6 +144,13 @@ function setup_tools_operators() {
   fi
 }
 
+function setup_cluster_role() {
+  if [[ ${CLUSTER_TYPE} == "member" ]]; then
+    # Create necessary ClusterRole
+    oc apply -f ./config/cluster_role.yaml
+  fi
+}
+
 function setup_cluster() {
   echo "cluster type:$CLUSTER_TYPE"
   CONFIG_MANIFESTS=${CLUSTER_TYPE}_$(date +"%Y_%m_%d-%H_%M_%S")
@@ -221,3 +228,4 @@ deploy_operators
 setup_logging
 setup_autoscaler
 setup_tools_operators
+setup_cluster_role
