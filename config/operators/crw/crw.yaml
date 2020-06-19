@@ -1,0 +1,27 @@
+apiVersion: org.eclipse.che/v1
+kind: CheCluster
+metadata:
+  name: codereadyworkspaces
+  namespace: workspaces
+spec:
+  auth:
+    externalIdentityProvider: false
+    openShiftoAuth: true
+  database:
+    externalDb: false
+  server:
+    customCheProperties:
+      CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT: <username>-code
+      CHE_WORKSPACE_DEFAULT__CPU__LIMIT__CORES: '0.4'
+      CHE_WORKSPACE_DEFAULT__CPU__REQUEST__CORES: '0.03'
+      CHE_WORKSPACE_SIDECAR_DEFAULT__CPU__LIMIT__CORES: '0.4'
+      CHE_WORKSPACE_SIDECAR_DEFAULT__CPU__REQUEST__CORES: '0.03'
+      CHE_WORKSPACE_STOP_ROLE_ENABLED: 'true'
+    selfSignedCert: false
+    tlsSupport: true
+    allowUserDefinedWorkspaceNamespaces: false
+    cheFlavor: codeready-workspaces
+  storage:
+    preCreateSubPaths: true
+    pvcClaimSize: 3Gi
+    pvcStrategy: per-workspace
