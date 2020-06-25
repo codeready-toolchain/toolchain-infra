@@ -109,7 +109,7 @@ Authentication is required in order to interact with the Mailgun API
 
 [source]
 ----
-export MAILGUN_API_KEY=your-mailgun-domain-api-key
+export MAILGUN_API_KEY=your-mailgun-api-key
 ----
 
 == Setting up Toolchain on Host and Member cluster
