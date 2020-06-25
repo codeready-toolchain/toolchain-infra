@@ -76,6 +76,7 @@ function deploy_operators() {
   if [[ ${CLUSTER_TYPE} == "host" ]]; then
     oc new-project "$HOST_OPERATOR_NS"
     NAME=host-operator OPERATOR_NAME=toolchain-host-operator NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/operator_deploy.yaml | oc apply -f -
+    DOMAIN=$DOMAIN DOMAIN_API_KEY=$DOMAIN_API_KEY NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/host_operator_secret.yaml | oc apply -f -
     oc apply -f ./config/reg_service_route.yaml
   else
     oc new-project "$MEMBER_OPERATOR_NS"
@@ -201,7 +202,7 @@ function remove_self_provisioner_role() {
 }
 
 # https://docs.openshift.com/container-platform/4.4/applications/pruning-objects.html
-func enabe_imagepruner() {
+function enabe_imagepruner() {
   oc patch imagepruner cluster -p '{"spec":{"suspend":false, "schedule":"*/0 * * * *"}}' --type=merge
 }
 
