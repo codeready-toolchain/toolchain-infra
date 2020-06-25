@@ -97,7 +97,7 @@ export SSH_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIp
 ----
 
 === MAILGUN_DOMAIN
-A server is required for sending messages using the Mailgun API
+A domain is required for sending messages using the Mailgun API
 
 [source]
 ----
