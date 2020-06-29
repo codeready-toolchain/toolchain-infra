@@ -97,7 +97,7 @@ export SSH_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIp
 ----
 
 === MAILGUN_DOMAIN
-A domain is required for sending messages using the Mailgun API
+A domain is required for sending messages using the Mailgun API. The value of this environment variable must be base64 encoded.
 
 [source]
 ----
@@ -105,11 +105,20 @@ export MAILGUN_DOMAIN=your-mailgun-domain
 ----
 
 === MAILGUN_API_KEY
-Authentication is required in order to interact with the Mailgun API
+Authentication is required in order to interact with the Mailgun API. The value of this environment variable must be base64 encoded.
 
 [source]
 ----
 export MAILGUN_API_KEY=your-mailgun-api-key
+----
+
+
+=== MAILGUN_SENDER_EMAIL
+The sender's email address is required in order to interact with the Mailgun API. The value of this environment variable must be base64 encoded.
+
+[source]
+----
+export MAILGUN_SENDER_EMAIL=your-mailgun-senders-email-address
 ----
 
 == Setting up Toolchain on Host and Member cluster
