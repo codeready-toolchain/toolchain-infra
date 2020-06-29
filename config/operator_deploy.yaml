@@ -1,18 +1,18 @@
 ---
-apiVersion: operators.coreos.com/v1
-kind: OperatorSource
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
 metadata:
   labels:
     opsrc-provider: codeready-toolchain
-  name: codeready-toolchain-operators
-  namespace: openshift-marketplace
+  name: hosted-toolchain-operators
+  namespace: ${NAMESPACE}
 spec:
-  authorizationToken: {}
-  displayName: CodeReady Toolchain Operators
-  endpoint: https://quay.io/cnr
-  publisher: Red Hat
-  registryNamespace: codeready-toolchain
-  type: appregistry
+  sourceType: grpc
+  image: quay.io/codeready-toolchain/hosted-toolchain-index:latest
+  displayName: Hosted Toolchain Operators
+  updateStrategy:
+    registryPoll:
+      interval: 5m
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
@@ -29,9 +29,9 @@ metadata:
   name: ${NAME}
   namespace: ${NAMESPACE}
 spec:
-  channel: nightly
+  channel: staging
   installPlanApproval: Automatic
   name: ${OPERATOR_NAME}
-  source: codeready-toolchain-operators
-  sourceNamespace: openshift-marketplace
+  source: hosted-toolchain-operators
+  sourceNamespace: ${NAMESPACE}
 ---
