@@ -96,6 +96,31 @@ We need to add ssh keys under authorized keys for all the nodes created by the i
 export SSH_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSUGPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XAt3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/EnmZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbxNrRFi9wrf+M7Q== schacon@mylaptop.local"
 ----
 
+=== MAILGUN_DOMAIN
+A domain is required for sending messages using the Mailgun API. The value of this environment variable must be base64 encoded.
+
+[source]
+----
+export MAILGUN_DOMAIN=your-mailgun-domain
+----
+
+=== MAILGUN_API_KEY
+Authentication is required in order to interact with the Mailgun API. The value of this environment variable must be base64 encoded.
+
+[source]
+----
+export MAILGUN_API_KEY=your-mailgun-api-key
+----
+
+
+=== MAILGUN_SENDER_EMAIL
+The sender's email address is required in order to interact with the Mailgun API. The value of this environment variable must be base64 encoded.
+
+[source]
+----
+export MAILGUN_SENDER_EMAIL=your-mailgun-senders-email-address
+----
+
 == Setting up Toolchain on Host and Member cluster
 To setup a hosted toolchain on multiple clusters (currently we are using 2 clusters i.e. host and member), we need to do following:
 
