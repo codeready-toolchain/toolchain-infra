@@ -76,6 +76,7 @@ function deploy_operators() {
   if [[ ${CLUSTER_TYPE} == "host" ]]; then
     oc new-project "$HOST_OPERATOR_NS"
     MAILGUN_DOMAIN=$MAILGUN_DOMAIN MAILGUN_API_KEY=$MAILGUN_API_KEY NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/host_operator_secret.yaml | oc apply -f -
+    REGISTRATION_SERVICE_URL=$REGISTRATION_SERVICE_URL NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/host_operator_config.yaml | oc apply -f -
     NAME=host-operator OPERATOR_NAME=toolchain-host-operator NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/operator_deploy.yaml | oc apply -f -
     oc apply -f ./config/reg_service_route.yaml
   else
