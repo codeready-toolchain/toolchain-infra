@@ -112,13 +112,20 @@ Authentication is required in order to interact with the Mailgun API. The value 
 export MAILGUN_API_KEY=your-mailgun-api-key
 ----
 
-
 === MAILGUN_SENDER_EMAIL
 The sender's email address is required in order to interact with the Mailgun API. The value of this environment variable must be base64 encoded.
 
 [source]
 ----
 export MAILGUN_SENDER_EMAIL=your-mailgun-senders-email-address
+----
+
+=== REGISTRATION_SERVICE_URL
+The url where the registration-service is running.
+
+[source]
+----
+export REGISTRATION_SERVICE_URL=registration-service-url
 ----
 
 == Setting up Toolchain on Host and Member cluster
