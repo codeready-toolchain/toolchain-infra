@@ -81,7 +81,11 @@ function deploy_operators() {
     oc apply -f ./config/reg_service_route.yaml
   else
     oc new-project "$MEMBER_OPERATOR_NS"
-    IDP_NAME=$IDP_NAME NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/member_operator_config.yaml | oc apply -f -
+    if [[ -z ${IDENTITY_PROVIDER} ]]; then
+      export IDENTITY_PROVIDER="rhd"
+      echo "setting up default IDENTITY_PROVIDER i.e. $IDENTITY_PROVIDER for identity provider configuration"
+    fi
+    IDENTITY_PROVIDER_NAME=$IDENTITY_PROVIDER_NAME NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/member_operator_config.yaml | oc apply -f -
     NAME=member-operator OPERATOR_NAME=toolchain-member-operator NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/operator_deploy.yaml | oc apply -f -
   fi
 }
@@ -181,8 +185,12 @@ function setup_idp() {
     export ISSUER="https://sso.redhat.com/auth/realms/redhat-external"
     echo "setting up default ISSUER url i.e. $ISSUER for identity provider configuration"
   fi
+  if [[ -z ${IDENTITY_PROVIDER} ]]; then
+    export IDENTITY_PROVIDER="rhd"
+    echo "setting up default IDENTITY_PROVIDER i.e. $IDENTITY_PROVIDER for identity provider configuration"
+  fi
   CLIENT_SECRET=$CLIENT_SECRET envsubst <./config/oauth/rhd_idp_secret.yaml | oc apply -f -
-  ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
+  IDENTITY_PROVIDER_NAME=$IDENTITY_PROVIDER_NAME ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
 }
 
 function create_crt_admins() {

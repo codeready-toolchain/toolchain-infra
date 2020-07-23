@@ -5,4 +5,4 @@ metadata:
   namespace: ${NAMESPACE}
 type: Opaque
 data:
-  idp.name: ${IDP_NAME}
+  identity.provider: ${IDENTITY_PROVIDER_NAME}
