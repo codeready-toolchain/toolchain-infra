@@ -85,7 +85,7 @@ function deploy_operators() {
       export IDENTITY_PROVIDER="rhd"
       echo "setting up default IDENTITY_PROVIDER i.e. $IDENTITY_PROVIDER for identity provider configuration"
     fi
-    IDENTITY_PROVIDER_NAME=$IDENTITY_PROVIDER_NAME NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/member_operator_config.yaml | oc apply -f -
+    IDENTITY_PROVIDER=$IDENTITY_PROVIDER NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/member_operator_config.yaml | oc apply -f -
     NAME=member-operator OPERATOR_NAME=toolchain-member-operator NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/operator_deploy.yaml | oc apply -f -
   fi
 }
@@ -190,7 +190,7 @@ function setup_idp() {
     echo "setting up default IDENTITY_PROVIDER i.e. $IDENTITY_PROVIDER for identity provider configuration"
   fi
   CLIENT_SECRET=$CLIENT_SECRET envsubst <./config/oauth/rhd_idp_secret.yaml | oc apply -f -
-  IDENTITY_PROVIDER_NAME=$IDENTITY_PROVIDER_NAME ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
+  IDENTITY_PROVIDER=$IDENTITY_PROVIDER ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
 }
 
 function create_crt_admins() {
