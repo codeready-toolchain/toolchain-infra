@@ -144,8 +144,8 @@ The che route namespace.
 export CHE_NAMESPACE=che-namespace
 ----
 
-=== CHE_NAMESPACED_NAME
-The namespaced name of the che route
+=== CHE_NAME
+The name of the che route.
 
 [source]
 ----
