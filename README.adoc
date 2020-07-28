@@ -128,6 +128,30 @@ The url where the registration-service is running.
 export REGISTRATION_SERVICE_URL=registration-service-url
 ----
 
+=== CONSOLE_NAMESPACE
+The console namespace.
+
+[source]
+----
+export CONSOLE_NAMESPACE=console-namespace
+----
+
+=== CHE_NAMESPACE
+The che namespace.
+
+[source]
+----
+export CHE_NAMESPACE=che-namespace
+----
+
+=== CHE_NAMESPACED_NAME
+The che namespaced name.
+
+[source]
+----
+export CHE_NAMESPACED_NAME=che-namespaced-name
+----
+
 == Setting up Toolchain on Host and Member cluster
 To setup a hosted toolchain on multiple clusters (currently we are using 2 clusters i.e. host and member), we need to do following:
 

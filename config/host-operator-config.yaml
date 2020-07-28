@@ -6,3 +6,6 @@ metadata:
 type: Opaque
 data:
   registration.service.url: ${REGISTRATION_SERVICE_URL}
+  console.namespace: ${CONSOLE_NAMESPACE)
+  che.namespace: ${CHE_NAMESPACE}
+  che.namespaced.name: ${CHE_NAMESPACED_NAME}
