@@ -129,7 +129,7 @@ export REGISTRATION_SERVICE_URL=registration-service-url
 ----
 
 === CONSOLE_NAMESPACE
-The console namespace.
+The console route namespace.
 
 [source]
 ----
@@ -137,7 +137,7 @@ export CONSOLE_NAMESPACE=console-namespace
 ----
 
 === CHE_NAMESPACE
-The che namespace.
+The che route namespace.
 
 [source]
 ----
@@ -145,7 +145,7 @@ export CHE_NAMESPACE=che-namespace
 ----
 
 === CHE_NAMESPACED_NAME
-The che namespaced name.
+The namespaced name of the che route
 
 [source]
 ----
