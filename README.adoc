@@ -129,7 +129,7 @@ export REGISTRATION_SERVICE_URL=registration-service-url
 ----
 
 === CONSOLE_NAMESPACE
-The console route namespace.
+The console route namespace. If CONSOLE_NAMESPACE env var is not provided, it will default to "openshift-console"
 
 [source]
 ----
@@ -137,7 +137,7 @@ export CONSOLE_NAMESPACE=console-namespace
 ----
 
 === CHE_NAMESPACE
-The che route namespace.
+The che route namespace. If CHE_NAMESPACE env var is not provided, it will default to "toolchain-che"
 
 [source]
 ----
@@ -145,11 +145,11 @@ export CHE_NAMESPACE=che-namespace
 ----
 
 === CHE_NAME
-The name of the che route.
+The name of the che route. If CHE_NAME env var is not provided, it will default to "che"
 
 [source]
 ----
-export CHE_NAMESPACED_NAME=che-namespaced-name
+export CHE_NAME=che-name
 ----
 
 == Setting up Toolchain on Host and Member cluster
