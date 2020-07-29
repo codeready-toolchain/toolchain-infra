@@ -136,6 +136,14 @@ The console route namespace. If CONSOLE_NAMESPACE env var is not provided, it wi
 export CONSOLE_NAMESPACE=console-namespace
 ----
 
+=== CONSOLE_ROUTE_NAME
+The console route name. If CONSOLE_ROUTE_NAME env var is not provided, it will default to "console"
+
+[source]
+----
+export CONSOLE_ROUTE_NAME=console-route-name
+----
+
 === CHE_NAMESPACE
 The che route namespace. If CHE_NAMESPACE env var is not provided, it will default to "toolchain-che"
 
