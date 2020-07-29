@@ -8,4 +8,4 @@ data:
   registration.service.url: ${REGISTRATION_SERVICE_URL}
   console.namespace: ${CONSOLE_NAMESPACE)
   che.namespace: ${CHE_NAMESPACE}
-  che.name: ${CHE_NAME}
+  che.rout.name: ${CHE_ROUTE_NAME}
