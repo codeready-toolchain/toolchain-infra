@@ -9,4 +9,4 @@ data:
   console.namespace: ${CONSOLE_NAMESPACE)
   console.route.name: ${CONSOLE_ROUTE_NAME)
   che.namespace: ${CHE_NAMESPACE}
-  che.rout.name: ${CHE_ROUTE_NAME}
+  che.route.name: ${CHE_ROUTE_NAME}

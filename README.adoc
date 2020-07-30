@@ -129,7 +129,7 @@ export REGISTRATION_SERVICE_URL=registration-service-url
 ----
 
 === CONSOLE_NAMESPACE
-The console route namespace. If CONSOLE_NAMESPACE env var is not provided, it will default to "openshift-console"
+The console namespace. If CONSOLE_NAMESPACE env var is not provided, it will default to "openshift-console"
 
 [source]
 ----
@@ -145,7 +145,7 @@ export CONSOLE_ROUTE_NAME=console-route-name
 ----
 
 === CHE_NAMESPACE
-The che route namespace. If CHE_NAMESPACE env var is not provided, it will default to "toolchain-che"
+The che namespace. If CHE_NAMESPACE env var is not provided, it will default to "toolchain-che"
 
 [source]
 ----
