@@ -79,7 +79,7 @@ export ISSUER=your_issuer_url
 If you have not set this variable, script will use default issuer i.e. "https://sso.redhat.com/auth/realms/redhat-external" which points for RH SSO
 
 === PULL_SECRET
-We are storing host, member and 48 hrs temp clusters configuration files under `/config` directory, for which we need pull secrets to be set by the environment varibale `PULL_SECRET`
+We are storing host, member and 48 hrs temp clusters configuration files under `/config` directory, for which we need pull secrets to be set by the environment variable `PULL_SECRET`
 
 [source]
 ----
@@ -126,6 +126,38 @@ The url where the registration-service is running.
 [source]
 ----
 export REGISTRATION_SERVICE_URL=registration-service-url
+----
+
+=== CONSOLE_NAMESPACE
+The console namespace. If CONSOLE_NAMESPACE env var is not provided, it will default to "openshift-console"
+
+[source]
+----
+export CONSOLE_NAMESPACE=console-namespace
+----
+
+=== CONSOLE_ROUTE_NAME
+The console route name. If CONSOLE_ROUTE_NAME env var is not provided, it will default to "console"
+
+[source]
+----
+export CONSOLE_ROUTE_NAME=console-route-name
+----
+
+=== CHE_NAMESPACE
+The che namespace. If CHE_NAMESPACE env var is not provided, it will default to "toolchain-che"
+
+[source]
+----
+export CHE_NAMESPACE=che-namespace
+----
+
+=== CHE_ROUTE_NAME
+The name of the Che dashboard route. If CHE_ROUTE_NAME env var is not provided, it will default to "che"
+
+[source]
+----
+export CHE_ROUTE_NAME=che-route-name
 ----
 
 === IDENTITY_PROVIDER
@@ -205,7 +237,7 @@ If you want to try this setup one step at a time, you can follow the following s
 ----
 
 ==== With Overriding an Operator's Namespace
-If you want to overwrite an operator's namespace, you can use the respective flags or environamene variable
+If you want to overwrite an operator's namespace, you can use the respective flags or environment variable
 like following steps:
 [source, bash]
 ----
@@ -256,7 +288,7 @@ oc delete secret kubeadmin -n kube-system
 Make sure to export required AWS profile.
 
 - If your cluster is created for 48 hrs then `export AWS_PROFILE=openshift-dev`
-- If your cluster is permanant cluster, then `export AWS_PROFILE=crt-robot`
+- If your cluster is a permanent cluster, then `export AWS_PROFILE=crt-robot`
 
 === From the Directory Which Stores Metadata for Openshift 4 Cluster
 
