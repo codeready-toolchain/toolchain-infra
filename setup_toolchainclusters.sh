@@ -10,7 +10,7 @@ function assign_default_namespace_values() {
 }
 
 function setup_kubeconfig() {
-  echo "setting up kubefed on host and member clusters"
+  echo "setting up ToolchainClusters on host and member clusters"
   export KUBECONFIG=$PWD/host-config
   oc config rename-context admin host-admin
   sed -i -e "s/name: admin/name: host-admin/g; s/user: admin/user: host-admin/g" $PWD/host-config
@@ -21,7 +21,7 @@ function setup_kubeconfig() {
   export KUBECONFIG=$PWD/host-config:$PWD/member-config
 }
 
-function setup_kubefed() {
+function setup_toolchainclusters() {
   curl -sSL https://raw.githubusercontent.com/codeready-toolchain/toolchain-common/master/scripts/add-cluster.sh | bash -s -- -t member -mn ${MEMBER_OPERATOR_NS} -hn ${HOST_OPERATOR_NS} -kc ${KUBECONFIG}
   curl -sSL https://raw.githubusercontent.com/codeready-toolchain/toolchain-common/master/scripts/add-cluster.sh | bash -s -- -t host -mn ${MEMBER_OPERATOR_NS} -hn ${HOST_OPERATOR_NS} -kc ${KUBECONFIG}
 }
@@ -31,9 +31,9 @@ function wait_for_resources_to_exists() {
   NAMESPACE=$2
   SUBSCRIPTION_NAME=$REPO_NAME
   counter=1
-  while [[ -z $(oc get sa ${REPO_NAME} -n ${NAMESPACE} 2>/dev/null) ]] || [[ -z $(oc get crd kubefedclusters.core.kubefed.io 2>/dev/null) ]]; do
+  while [[ -z $(oc get sa ${REPO_NAME} -n ${NAMESPACE} 2>/dev/null) ]]; do
     if [[ ${counter} -eq 180 ]]; then
-      echo "reached timeout of waiting for ServiceAccount ${REPO_NAME} to be available in namespace ${NAMESPACE} and CRD kubefedclusters.core.kubefed.io to be available in the cluster - see following info for debugging:"
+      echo "reached timeout of waiting for ServiceAccount ${REPO_NAME} to be available in namespace ${NAMESPACE} - see following info for debugging:"
       echo "================================ CatalogSource =================================="
       oc get catalogsource codeready-toolchain-operators -n openshift-marketplace -o yaml
       echo "================================ CatalogSource Pod Logs =================================="
@@ -43,7 +43,7 @@ function wait_for_resources_to_exists() {
       exit 1
     fi
 
-    echo "$counter attempt of waiting for ServiceAccount ${REPO_NAME} in namespace ${NAMESPACE} and CRD kubefedclusters.core.kubefed.io to be available in the cluster"
+    echo "$counter attempt of waiting for ServiceAccount ${REPO_NAME} in namespace ${NAMESPACE}"
     counter=$((counter + 1))
     sleep 1
   done
@@ -55,4 +55,4 @@ oc config use-context host-admin
 wait_for_resources_to_exists host-operator $HOST_OPERATOR_NS
 oc config use-context member-admin
 wait_for_resources_to_exists member-operator $MEMBER_OPERATOR_NS
-setup_kubefed
+setup_toolchainclusters
