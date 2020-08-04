@@ -128,6 +128,14 @@ The url where the registration-service is running.
 export REGISTRATION_SERVICE_URL=registration-service-url
 ----
 
+=== IDENTITY_PROVIDER
+The identity provider. If IDENTITY_PROVIDER env var is not provided, it will default to "rhd"
+
+[source]
+----
+export IDENTITY_PROVIDER=identity-provider
+----
+
 == Setting up Toolchain on Host and Member cluster
 To setup a hosted toolchain on multiple clusters (currently we are using 2 clusters i.e. host and member), we need to do following:
 
