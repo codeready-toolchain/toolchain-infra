@@ -128,7 +128,6 @@ The url where the registration-service is running.
 export REGISTRATION_SERVICE_URL=registration-service-url
 ----
 
-<<<<<<< HEAD
 === CONSOLE_NAMESPACE
 The console namespace. If CONSOLE_NAMESPACE env var is not provided, it will default to "openshift-console"
 
