@@ -6,7 +6,7 @@ metadata:
 spec:
   identityProviders:
   - mappingMethod: lookup
-    name: rhd
+    name: ${IDENTITY_PROVIDER}
     openID:
       claims:
         preferredUsername:

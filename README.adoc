@@ -128,6 +128,7 @@ The url where the registration-service is running.
 export REGISTRATION_SERVICE_URL=registration-service-url
 ----
 
+<<<<<<< HEAD
 === CONSOLE_NAMESPACE
 The console namespace. If CONSOLE_NAMESPACE env var is not provided, it will default to "openshift-console"
 
@@ -158,6 +159,14 @@ The name of the Che dashboard route. If CHE_ROUTE_NAME env var is not provided, 
 [source]
 ----
 export CHE_ROUTE_NAME=che-route-name
+----
+
+=== IDENTITY_PROVIDER
+The identity provider. If IDENTITY_PROVIDER env var is not provided, it will default to "rhd"
+
+[source]
+----
+export IDENTITY_PROVIDER=identity-provider
 ----
 
 == Setting up Toolchain on Host and Member cluster
