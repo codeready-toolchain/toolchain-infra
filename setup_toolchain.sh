@@ -63,10 +63,10 @@ function setup_host_and_member_clusters() {
   wait
 }
 
-function setup_kubefed() {
-    MEMBER_OPERATOR_NS=$MEMBER_OPERATOR_NS HOST_OPERATOR_NS=$HOST_OPERATOR_NS exec ./setup_kubefed.sh
+function setup_toolchainclusters() {
+    MEMBER_OPERATOR_NS=$MEMBER_OPERATOR_NS HOST_OPERATOR_NS=$HOST_OPERATOR_NS exec ./setup_toolchainclusters.sh
 }
 
 assign_default_namespace_values
 setup_host_and_member_clusters
-setup_kubefed
+setup_toolchainclusters

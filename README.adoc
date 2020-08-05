@@ -177,7 +177,7 @@ To setup a hosted toolchain on multiple clusters (currently we are using 2 clust
 4. Remove self-provisioner cluster role from authenticated users
 5. Deploy registration service and host-operator on host cluster
 6. Deploy member-operator on member cluster
-7. Create/setup KubeFedCluster
+7. Create/setup ToolchainCluster
 
 === With Single Step
 
@@ -233,7 +233,7 @@ If you want to try this setup one step at a time, you can follow the following s
 ----
 ./setup_cluster.sh -t host
 ./setup_cluster.sh -t member
-./setup_kubefed.sh
+./setup_toolchainclusters.sh
 ----
 
 ==== With Overriding an Operator's Namespace
@@ -243,8 +243,8 @@ like following steps:
 ----
 ./setup_cluster.sh -t host -hs my_host_ns -mn my_member_ns
 ./setup_cluster.sh -t member -hs my_host_ns -mn my_member_ns
-./setup_kubefed.sh
-MEMBER_OPERATOR_NS=my_member_ns HOST_OPERATOR_NS=my_host_ns ./setup_kubefed.sh
+./setup_toolchainclusters.sh
+MEMBER_OPERATOR_NS=my_member_ns HOST_OPERATOR_NS=my_host_ns ./setup_toolchainclusters.sh
 ----
 
 === Installing and Renewing Let’s Encrypt Certificates
