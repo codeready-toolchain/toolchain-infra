@@ -227,7 +227,7 @@ function remove_self_provisioner_role() {
   oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
 }
 
-# https://docs.openshift.com/container-platform/4.4/applications/pruning-objects.html
+# https://docs.openshift.com/container-platform/4.5/applications/pruning-objects.html
 function enabe_imagepruner() {
   oc patch imagepruner cluster -p '{"spec":{"suspend":false, "schedule":"*/0 * * * *"}}' --type=merge
 }
