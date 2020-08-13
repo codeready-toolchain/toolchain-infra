@@ -229,7 +229,7 @@ function remove_self_provisioner_role() {
 
 # https://docs.openshift.com/container-platform/4.5/applications/pruning-objects.html
 function enabe_imagepruner() {
-  oc patch imagepruner cluster -p '{"spec":{"suspend":false, "schedule":"*/0 * * * *"}}' --type=merge
+  oc patch imagepruner cluster -p '{"spec":{"suspend":false, "schedule":"0 0 * * *"}}' --type=merge
 }
 
 validate_env
