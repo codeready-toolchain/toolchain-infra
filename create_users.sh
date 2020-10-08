@@ -7,7 +7,8 @@ function create_users() {
     [mjobanek-crtadmin]=52791559
     [xcoulon-crtadmin]=52753083
     [sbryzak-crtadmin]=53039915
-    [bbrownin-crtadmin]=53396506
+    [rajiv-crtadmin]=53770678
+    #[bbrownin-crtadmin]=53396506
     #[tkurian-crtadmin]=
   )
   USERS=""
