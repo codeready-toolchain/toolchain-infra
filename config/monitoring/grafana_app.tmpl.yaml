@@ -14,6 +14,9 @@ parameters:
 - name: NAME
   description: The name to use for these resources to create
   value: grafana
+- name: SA_NAME
+  description: The name of the Service Account 
+  value: grafana
 - name: PROMETHEUS_URL
   description: the URL to the Prometheus instance
   value: https://thanos-querier.openshift-monitoring.svc:9091
@@ -67,10 +70,10 @@ objects:
         labels:
           app: ${NAME}
       spec:
-        serviceAccountName: ${NAME}
+        serviceAccountName: ${SA_NAME}
         containers:
         - name: oauth-proxy
-          image: openshift/oauth-proxy:latest
+          image: openshift/oauth-proxy:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 8443
@@ -78,7 +81,7 @@ objects:
           args:
           - --https-address=:8443
           - --provider=openshift
-          - --openshift-service-account=${NAME}
+          - --openshift-service-account=${SA_NAME}
           - --upstream=http://localhost:3000
           - --tls-cert=/etc/tls/private/tls.crt
           - --tls-key=/etc/tls/private/tls.key
@@ -87,12 +90,12 @@ objects:
           volumeMounts:
           - mountPath: /etc/tls/private
             name: grafana-tls
-        - image: docker.io/grafana/grafana:master
+        - image: docker.io/grafana/grafana:7.3.0
           imagePullPolicy: Always
           name: grafana
           env:
           - name: GF_AUTH_BASIC_ENABLED
-            value: 'false'
+            value: 'true'
           - name: GF_AUTH_PROXY_ENABLED
             value: 'true'
           - name: GF_AUTH_PROXY_HEADER_NAME

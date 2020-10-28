@@ -26,7 +26,6 @@ function deploy_grafana() {
   oc process -f config/monitoring/grafana_app.tmpl.yaml -p BEARER_TOKEN="$(oc serviceaccounts get-token grafana -n toolchain-grafana)" | oc apply -f -
   echo "✅  done with deploying Grafana"
   echo "🖥  https://$(oc get route/grafana -n toolchain-grafana -o json | jq -r '.status.ingress[0].host')"
-  
 }
 
 enable_user_workload_monitoring
