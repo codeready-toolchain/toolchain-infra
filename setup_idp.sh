@@ -11,6 +11,10 @@ function setup_idp() {
     export IDENTITY_PROVIDER="rhd"
     echo "setting up default IDENTITY_PROVIDER i.e. $IDENTITY_PROVIDER for identity provider configuration"
   fi
+  if [[ -z ${MAPPING} ]]; then
+    export MAPPING="lookup"
+    echo "setting up default mapping method i.e. $MAPPING for identity provider configuration"
+  fi
   CLIENT_SECRET=$CLIENT_SECRET envsubst <./config/oauth/rhd_idp_secret.yaml | oc apply -f -
   IDENTITY_PROVIDER=$IDENTITY_PROVIDER ISSUER=$ISSUER envsubst <./config/oauth/idp.yaml | oc apply -f -
 }
