@@ -73,7 +73,7 @@ objects:
         serviceAccountName: ${SA_NAME}
         containers:
         - name: oauth-proxy
-          image: openshift/oauth-proxy:1.0.0
+          image: openshift/oauth-proxy:latest
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 8443
@@ -95,7 +95,7 @@ objects:
           name: grafana
           env:
           - name: GF_AUTH_BASIC_ENABLED
-            value: 'true'
+            value: 'false'
           - name: GF_AUTH_PROXY_ENABLED
             value: 'true'
           - name: GF_AUTH_PROXY_HEADER_NAME
