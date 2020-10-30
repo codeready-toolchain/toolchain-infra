@@ -114,6 +114,10 @@ objects:
             value: 'light'
           - name: GF_SECURITY_ADMIN_USER
             value: 'xcoulon'
+          - name: GF_PATHS_CONFIG # see https://grafana.com/docs/grafana/latest/administration/configure-docker/#default-paths
+            value: '/etc/grafana/grafana.ini'
+          - name: GF_PATHS_PROVISIONING # see https://grafana.com/docs/grafana/latest/administration/configure-docker/#default-paths
+            value: '/etc/grafana/provisioning'
           ports:
           - containerPort: 3000
             name: http
@@ -125,6 +129,10 @@ objects:
           volumeMounts:
           - mountPath: /etc/grafana/provisioning/datasources
             name: grafana-prometheus-ds
+          - mountPath: /etc/grafana/provisioning/dashboards
+            name: grafana-dashboards
+          - mountPath: /var/lib/grafana/dashboards
+            name: grafana-devsandbox-dashboard
         volumes:
           - name: grafana-tls
             secret:
@@ -132,6 +140,12 @@ objects:
           - name: grafana-prometheus-ds
             configMap:
               name: grafana-prometheus-ds
+          - name: grafana-dashboards
+            configMap:
+              name: grafana-dashboards
+          - name: grafana-devsandbox-dashboard
+            configMap:
+              name: grafana-devsandbox-dashboard
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
@@ -165,3 +179,17 @@ objects:
           # oauthPassThru: true
         secureJsonData:
           httpHeaderValue1: 'Bearer ${BEARER_TOKEN}'
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    namespace: ${NAMESPACE}
+    name: grafana-dashboards
+  data:
+    default.yaml: |
+      apiVersion: 1
+      providers:
+        - name: Default     # A uniquely identifiable name for the provider
+          folder:           # The default folder
+          type: file
+          options:
+            path: /var/lib/grafana/dashboards

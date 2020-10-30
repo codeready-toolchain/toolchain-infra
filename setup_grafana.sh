@@ -20,9 +20,13 @@ function enable_user_workload_monitoring() {
 ####################################################
 function deploy_grafana() {
   echo "🚛  deploying Grafana..."
-  oc create namespace toolchain-grafana
+  oc apply -f config/monitoring/toolchain_grafana_ns.yaml # same as `oc create namespace toolchain-grafana` but avoids the `Error from server (AlreadyExists): namespaces "toolchain-grafana" already exists` message when repeating the procedure
   oc apply -f config/monitoring/grafana_serviceaccount.yaml
   oc adm policy add-cluster-role-to-user cluster-monitoring-view -z grafana -n toolchain-grafana
+  # use the 'oc create configmap' command along with the 'oc apply' to make sure the CM can be created or updated
+  oc create configmap -n toolchain-grafana grafana-devsandbox-dashboard \
+    --from-file=devsandbox.json=config/monitoring/devsandbox-dashboard.json \
+    -o yaml --dry-run=client | oc apply -f - 
   oc process -f config/monitoring/grafana_app.tmpl.yaml -p BEARER_TOKEN="$(oc serviceaccounts get-token grafana -n toolchain-grafana)" | oc apply -f -
   echo "✅  done with deploying Grafana"
   echo "🖥  https://$(oc get route/grafana -n toolchain-grafana -o json | jq -r '.status.ingress[0].host')"
