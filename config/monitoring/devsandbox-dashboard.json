@@ -25,30 +25,34 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": null,
+        "decimals": 4,
         "fieldConfig": {
           "defaults": {
-            "custom": {}
+            "custom": {},
+            "unit": "none"
           },
           "overrides": []
         },
         "fill": 1,
         "fillGradient": 0,
         "gridPos": {
-          "h": 9,
+          "h": 10,
           "w": 12,
           "x": 0,
           "y": 0
         },
         "hiddenSeries": false,
-        "id": 8,
+        "id": 10,
         "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "max": true,
+          "min": true,
+          "rightSide": false,
           "show": true,
           "total": false,
-          "values": false
+          "values": true
         },
         "lines": true,
         "linewidth": 1,
@@ -67,16 +71,15 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "avg_over_time(namespace:container_memory_usage_bytes:sum{namespace=\"xcoulon-host-operator\", prometheus=\"openshift-monitoring/k8s\"}[1m])\n",
-            "hide": false,
+            "expr": "namespace:container_cpu_usage_seconds_total:sum_rate{namespace=~\".*-host-operator\"}",
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "host-operator",
             "refId": "A"
           },
           {
-            "expr": "avg_over_time(namespace:container_memory_usage_bytes:sum{namespace=\"xcoulon-member-operator\", prometheus=\"openshift-monitoring/k8s\"}[1m])",
+            "expr": "namespace:container_cpu_usage_seconds_total:sum_rate{namespace=~\".*-member-operator\"}",
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "member-operator",
             "refId": "B"
           }
         ],
@@ -84,7 +87,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Memory Usage",
+        "title": "Operator CPU Usage",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -100,7 +103,8 @@
         },
         "yaxes": [
           {
-            "format": "short",
+            "$$hashKey": "object:444",
+            "format": "none",
             "label": null,
             "logBase": 1,
             "max": null,
@@ -108,6 +112,7 @@
             "show": true
           },
           {
+            "$$hashKey": "object:445",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -127,6 +132,8 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": "User Workload Monitoring",
+        "decimals": null,
+        "description": "",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -136,106 +143,10 @@
         "fill": 1,
         "fillGradient": 0,
         "gridPos": {
-          "h": 9,
+          "h": 20,
           "w": 12,
           "x": 12,
           "y": 0
-        },
-        "hiddenSeries": false,
-        "id": 2,
-        "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
-          "show": false,
-          "total": false,
-          "values": false
-        },
-        "lines": true,
-        "linewidth": 1,
-        "nullPointMode": "null",
-        "options": {
-          "alertThreshold": true
-        },
-        "percentage": false,
-        "pluginVersion": "7.3.0",
-        "pointradius": 2,
-        "points": false,
-        "renderer": "flot",
-        "seriesOverrides": [],
-        "spaceLength": 10,
-        "stack": false,
-        "steppedLine": false,
-        "targets": [
-          {
-            "expr": "sandbox_master_user_record_current",
-            "interval": "",
-            "legendFormat": "",
-            "refId": "A"
-          }
-        ],
-        "thresholds": [],
-        "timeFrom": null,
-        "timeRegions": [],
-        "timeShift": null,
-        "title": "Master User Records (current)",
-        "tooltip": {
-          "shared": true,
-          "sort": 0,
-          "value_type": "individual"
-        },
-        "type": "graph",
-        "xaxis": {
-          "buckets": null,
-          "mode": "time",
-          "name": null,
-          "show": true,
-          "values": []
-        },
-        "yaxes": [
-          {
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          },
-          {
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          }
-        ],
-        "yaxis": {
-          "align": false,
-          "alignLevel": null
-        }
-      },
-      {
-        "aliasColors": {},
-        "bars": false,
-        "dashLength": 10,
-        "dashes": false,
-        "datasource": "User Workload Monitoring",
-        "description": "Total signups vs total provisioned",
-        "fieldConfig": {
-          "defaults": {
-            "custom": {}
-          },
-          "overrides": []
-        },
-        "fill": 1,
-        "fillGradient": 0,
-        "gridPos": {
-          "h": 9,
-          "w": 12,
-          "x": 0,
-          "y": 9
         },
         "hiddenSeries": false,
         "id": 4,
@@ -244,7 +155,7 @@
           "current": false,
           "max": false,
           "min": false,
-          "show": false,
+          "show": true,
           "total": false,
           "values": false
         },
@@ -266,22 +177,45 @@
         "targets": [
           {
             "expr": "sandbox_user_signups_provisioned_total",
+            "instant": false,
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "provisioned ",
             "refId": "A"
           },
           {
             "expr": "sandbox_user_signups_total",
+            "instant": false,
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "total",
             "refId": "B"
+          },
+          {
+            "expr": "sandbox_user_signups_auto_deactivated_total",
+            "instant": false,
+            "interval": "",
+            "legendFormat": "auto deactivated",
+            "refId": "C"
+          },
+          {
+            "expr": "sandbox_user_signups_banned_total",
+            "instant": false,
+            "interval": "",
+            "legendFormat": "banned",
+            "refId": "D"
+          },
+          {
+            "expr": "sandbox_master_user_record_current",
+            "instant": true,
+            "interval": "",
+            "legendFormat": "current",
+            "refId": "E"
           }
         ],
         "thresholds": [],
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "User Signups (total)",
+        "title": "Users (overall)",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -297,6 +231,7 @@
         },
         "yaxes": [
           {
+            "$$hashKey": "object:738",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -305,6 +240,7 @@
             "show": true
           },
           {
+            "$$hashKey": "object:739",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -326,28 +262,30 @@
         "datasource": null,
         "fieldConfig": {
           "defaults": {
-            "custom": {}
+            "custom": {},
+            "unit": "bytes"
           },
           "overrides": []
         },
         "fill": 1,
         "fillGradient": 0,
         "gridPos": {
-          "h": 9,
+          "h": 10,
           "w": 12,
-          "x": 12,
-          "y": 9
+          "x": 0,
+          "y": 10
         },
         "hiddenSeries": false,
-        "id": 6,
+        "id": 8,
         "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "max": true,
+          "min": true,
           "show": true,
           "total": false,
-          "values": false
+          "values": true
         },
         "lines": true,
         "linewidth": 1,
@@ -366,17 +304,24 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "avg_over_time(sandbox_master_user_record_current[1h])",
+            "expr": "avg_over_time(namespace:container_memory_usage_bytes:sum{namespace=~\".*-host-operator\"}[1m])\n",
+            "hide": false,
             "interval": "",
-            "legendFormat": "",
+            "legendFormat": "host-operator",
             "refId": "A"
+          },
+          {
+            "expr": "avg_over_time(namespace:container_memory_usage_bytes:sum{namespace=~\".*-member-operator\"}[1m])",
+            "interval": "",
+            "legendFormat": "member-operator",
+            "refId": "B"
           }
         ],
         "thresholds": [],
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Master User Records (avg/1h)",
+        "title": "Operator Memory Usage",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -392,7 +337,8 @@
         },
         "yaxes": [
           {
-            "format": "short",
+            "$$hashKey": "object:514",
+            "format": "bytes",
             "label": null,
             "logBase": 1,
             "max": null,
@@ -400,6 +346,7 @@
             "show": true
           },
           {
+            "$$hashKey": "object:515",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -414,7 +361,7 @@
         }
       }
     ],
-    "refresh": "10s",
+    "refresh": "30s",
     "schemaVersion": 26,
     "style": "dark",
     "tags": [],
@@ -429,5 +376,5 @@
     "timezone": "",
     "title": "Dev Sandbox",
     "uid": "bOWZy9tGk",
-    "version": 3
+    "version": 1
   }
