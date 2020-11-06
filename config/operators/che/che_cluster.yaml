@@ -23,5 +23,5 @@ spec:
     cheFlavor: che
   storage:
     preCreateSubPaths: true
-    pvcClaimSize: 5Gi
+    pvcClaimSize: 10Gi
     pvcStrategy: common
