@@ -24,6 +24,7 @@ parameters:
   description: The bearet oken to authenticate to Thanos Querier
   required: true
 objects:
+
 # Route to the Grafana Service 
 - apiVersion: route.openshift.io/v1
   kind: Route
@@ -35,6 +36,7 @@ objects:
       name: ${NAME}
     tls:
       termination: Reencrypt
+
 # Service to the Grafana deployment (via the oauth-proxy sidecar container)
 - apiVersion: v1
   kind: Service
@@ -50,6 +52,7 @@ objects:
       targetPort: 8443
     selector:
       app: ${NAME}
+
 # Deploy Grafana with an oauth-proxy sidecar container
 - apiVersion: apps/v1
   kind: Deployment
@@ -151,6 +154,8 @@ objects:
         schedulerName: default-scheduler
         securityContext: {}
         terminationGracePeriodSeconds: 60
+
+# ConfigMap to specify the connection to Prometheus
 - apiVersion: v1
   kind: ConfigMap
   metadata:
@@ -179,6 +184,8 @@ objects:
           # oauthPassThru: true
         secureJsonData:
           httpHeaderValue1: 'Bearer ${BEARER_TOKEN}'
+
+# ConfigMap to the Dashboards and where to store them 
 - apiVersion: v1
   kind: ConfigMap
   metadata:
