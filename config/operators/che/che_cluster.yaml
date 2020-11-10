@@ -9,6 +9,8 @@ spec:
     openShiftoAuth: true
   database:
     externalDb: false
+  metrics:
+    enable: true
   server:
     customCheProperties:
       CHE_INFRA_KUBERNETES_NAMESPACE_DEFAULT: <username>-code
