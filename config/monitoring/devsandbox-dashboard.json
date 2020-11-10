@@ -25,7 +25,8 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "decimals": 4,
+      "decimals": 1,
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -71,13 +72,13 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pod:container_cpu_usage:sum{pod=~'host-operator-.*',namespace=~'.*-host-operator'}",
+          "expr": "pod:container_cpu_usage:sum{pod=~'host-operator-.*',namespace=~'.*-host-operator'}*1000",
           "interval": "",
           "legendFormat": "host-operator",
           "refId": "A"
         },
         {
-          "expr": "pod:container_cpu_usage:sum{pod=~'member-operator-.*',namespace=~'.*-member-operator'}",
+          "expr": "pod:container_cpu_usage:sum{pod=~'member-operator-.*',namespace=~'.*-member-operator'}*1000",
           "interval": "",
           "legendFormat": "member-operator",
           "refId": "B"
@@ -87,7 +88,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Operator CPU Usage",
+      "title": "Operator CPU Usage (milli)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -104,8 +105,9 @@
       "yaxes": [
         {
           "$$hashKey": "object:444",
+          "decimals": 1,
           "format": "none",
-          "label": null,
+          "label": "",
           "logBase": 1,
           "max": null,
           "min": null,
