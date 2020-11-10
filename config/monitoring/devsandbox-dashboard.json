@@ -61,7 +61,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.0",
+      "pluginVersion": "7.3.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -71,13 +71,13 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "namespace:container_cpu_usage_seconds_total:sum_rate{namespace=~\".*-host-operator\"}",
+          "expr": "pod:container_cpu_usage:sum{pod=~'host-operator-.*',namespace=~'.*-host-operator'}",
           "interval": "",
           "legendFormat": "host-operator",
           "refId": "A"
         },
         {
-          "expr": "namespace:container_cpu_usage_seconds_total:sum_rate{namespace=~\".*-member-operator\"}",
+          "expr": "pod:container_cpu_usage:sum{pod=~'member-operator-.*',namespace=~'.*-member-operator'}",
           "interval": "",
           "legendFormat": "member-operator",
           "refId": "B"
@@ -168,7 +168,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.0",
+      "pluginVersion": "7.3.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -268,7 +268,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.0",
+      "pluginVersion": "7.3.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -278,14 +278,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg_over_time(namespace:container_memory_usage_bytes:sum{namespace=~\".*-host-operator\"}[1m])\n",
+          "expr": "sum(container_memory_working_set_bytes{pod=~'host-operator-.*',namespace=~'.*-host-operator',container='',}) BY (pod, namespace)\n",
           "hide": false,
           "interval": "",
           "legendFormat": "host-operator",
           "refId": "A"
         },
         {
-          "expr": "avg_over_time(namespace:container_memory_usage_bytes:sum{namespace=~\".*-member-operator\"}[1m])",
+          "expr": "sum(container_memory_working_set_bytes{pod=~'member-operator-.*',namespace=~'.*-member-operator',container='',}) BY (pod, namespace)",
           "interval": "",
           "legendFormat": "member-operator",
           "refId": "B"
@@ -375,7 +375,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.0",
+      "pluginVersion": "7.3.0",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
