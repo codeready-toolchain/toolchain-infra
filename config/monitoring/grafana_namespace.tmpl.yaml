@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: grafana-serviceaccount-template
+  annotations:
+    tags: "grafana,monitoring"
+labels:
+  # will be applied on all objects defined below
+  app: grafana 
+parameters:
+- name: NAMESPACE
+  description: The namespace in which to create these Grafana resources
+  required: true
+
+objects:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: ${NAMESPACE}

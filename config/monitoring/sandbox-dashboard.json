@@ -17,6 +17,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
+  "iteration": 1605283104931,
   "links": [],
   "panels": [
     {
@@ -24,7 +25,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "-- Mixed --",
       "decimals": 1,
       "description": "",
       "fieldConfig": {
@@ -72,13 +73,16 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": "Host Cluster",
           "expr": "pod:container_cpu_usage:sum{pod=~'host-operator-.*',namespace=~'.*-host-operator'}*1000",
           "interval": "",
           "legendFormat": "host-operator",
           "refId": "A"
         },
         {
+          "datasource": "Member Cluster",
           "expr": "pod:container_cpu_usage:sum{pod=~'member-operator-.*',namespace=~'.*-member-operator'}*1000",
+          "hide": false,
           "interval": "",
           "legendFormat": "member-operator",
           "refId": "B"
@@ -129,113 +133,71 @@
       }
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "User Workload Monitoring",
-      "decimals": null,
+      "datasource": "Host Cluster",
       "description": "Tracking the total number of MasterUserRecord resources",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "decimals": 0,
+          "mappings": [],
+          "max": 3000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 2500
+              }
+            ]
+          }
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 10,
         "w": 12,
         "x": 12,
         "y": 0
       },
-      "hiddenSeries": false,
       "id": 4,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       },
-      "percentage": false,
       "pluginVersion": "7.3.0",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
           "expr": "sum(sandbox_master_user_record_current)",
-          "instant": false,
           "interval": "",
           "legendFormat": "current",
-          "refId": "E"
+          "refId": "A"
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "Active users (total)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:738",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:739",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "gauge"
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "-- Mixed --",
+      "decimals": 2,
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -280,13 +242,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(container_memory_working_set_bytes{pod=~'host-operator-.*',namespace=~'.*-host-operator',container='',}) BY (pod, namespace)\n",
-          "hide": false,
+          "datasource": "Host Cluster",
+          "expr": "sum(container_memory_working_set_bytes{pod=~'host-operator-.*',namespace=~'.*-host-operator',container='',}) BY (pod, namespace)",
           "interval": "",
           "legendFormat": "host-operator",
           "refId": "A"
         },
         {
+          "datasource": "Member Cluster",
           "expr": "sum(container_memory_working_set_bytes{pod=~'member-operator-.*',namespace=~'.*-member-operator',container='',}) BY (pod, namespace)",
           "interval": "",
           "legendFormat": "member-operator",
@@ -314,6 +277,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:514",
+          "decimals": 2,
           "format": "bytes",
           "label": null,
           "logBase": 1,
@@ -323,6 +287,7 @@
         },
         {
           "$$hashKey": "object:515",
+          "decimals": null,
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -341,7 +306,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "Host Cluster",
       "decimals": 2,
       "description": "Tracking evolution of approved, deactivated and banned users",
       "fieldConfig": {
@@ -393,15 +358,15 @@
           "refId": "A"
         },
         {
-          "expr": "sum by (service) (rate(sandbox_user_signups_banned_total[5m]))*60",
-          "interval": "",
-          "legendFormat": "banned/min",
-          "refId": "B"
-        },
-        {
           "expr": "sum by (service) (rate(sandbox_user_signups_deactivated_total[5m]))*60",
           "interval": "",
           "legendFormat": "deactivated/min",
+          "refId": "B"
+        },
+        {
+          "expr": "sum by (service) (rate(sandbox_user_signups_banned_total[5m]))*60",
+          "interval": "",
+          "legendFormat": "banned/min",
           "refId": "C"
         }
       ],
@@ -452,15 +417,42 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": [
+            "Host Cluster",
+            "Member Cluster"
+          ],
+          "value": [
+            "Host Cluster",
+            "Member Cluster"
+          ]
+        },
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "Datasource",
+        "options": [],
+        "query": "prometheus",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Dev Sandbox",
+  "title": "Sandbox",
   "uid": "bOWZy9tGk",
   "version": 1
 }
