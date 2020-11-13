@@ -24,7 +24,7 @@ spec:
     serverExposureStrategy: 'single-host'
     tlsSupport: true
     allowUserDefinedWorkspaceNamespaces: false
-    cheFlavor: codeready-workspaces
+    cheFlavor: codeready
   storage:
     preCreateSubPaths: true
     pvcClaimSize: 10Gi
