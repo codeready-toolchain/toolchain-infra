@@ -27,5 +27,5 @@ spec:
     cheFlavor: che
   storage:
     preCreateSubPaths: true
-    pvcClaimSize: 10Gi
-    pvcStrategy: common
+    pvcClaimSize: 2Gi
+    pvcStrategy: per-workspace
