@@ -144,22 +144,6 @@ The console route name. If CONSOLE_ROUTE_NAME env var is not provided, it will d
 export CONSOLE_ROUTE_NAME=console-route-name
 ----
 
-=== CHE_NAMESPACE
-The che namespace. If CHE_NAMESPACE env var is not provided, it will default to "codeready-workspaces-operator"
-
-[source]
-----
-export CHE_NAMESPACE=che-namespace
-----
-
-=== CHE_ROUTE_NAME
-The name of the Che dashboard route. If CHE_ROUTE_NAME env var is not provided, it will default to "codeready"
-
-[source]
-----
-export CHE_ROUTE_NAME=che-route-name
-----
-
 === IDENTITY_PROVIDER
 The identity provider. If IDENTITY_PROVIDER env var is not provided, it will default to "rhd"
 
