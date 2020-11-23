@@ -78,6 +78,12 @@ export ISSUER=your_issuer_url
 
 If you have not set this variable, script will use default issuer i.e. "https://sso.redhat.com/auth/realms/redhat-external" which points for RH SSO
 
+=== MAPPING
+
+By default, the mapping method for the Identity Provider is `lookup`, which means that the `user` and `identity` resources MUST exist on the cluster before the user logs in.
+
+However, for testing purposes on a temp cluster, the `MAPPING` env var can be explicitely set to `claim`, in which case the `user` and `identity` resources will be created during the login.
+
 === PULL_SECRET
 We are storing host, member and 48 hrs temp clusters configuration files under `/config` directory, for which we need pull secrets to be set by the environment variable `PULL_SECRET`
 

@@ -1,0 +1,132 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: prometheus-template
+  annotations:
+    tags: "prometheus,monitoring"
+labels:
+  # will be applied on all objects defined below
+  app: prometheus 
+parameters:
+- name: NAMESPACE
+  description: The namespace in which to install the Prometheus Operator
+  required: true
+- name: SA_NAME
+  description: The name of the local Service Account to use to connect to Prometheus
+  required: true
+
+objects:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: ${NAMESPACE}
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRole
+  metadata:
+    name: kube-rbac-proxy
+  rules:
+  - apiGroups: 
+    - authentication.k8s.io
+    resources:
+    - tokenreviews
+    verbs: 
+    - "create"
+  - apiGroups: 
+    - authorization.k8s.io
+    resources:
+    - subjectaccessreviews
+    verbs: 
+    - "create"
+
+- apiVersion: operators.coreos.com/v1alpha1
+  kind: Subscription
+  metadata:
+    namespace: ${NAMESPACE}
+    name: prometheus
+    labels:
+      operators.coreos.com/prometheus.${NAMESPACE}: ""
+  spec:
+    channel: beta
+    installPlanApproval: Automatic
+    name: prometheus
+    source: community-operators
+    sourceNamespace: openshift-marketplace
+    startingCSV: prometheusoperator.0.37.0
+
+# Prometheus itself (via a custom resource)
+- apiVersion: monitoring.coreos.com/v1
+  kind: Prometheus
+  metadata:
+    namespace: ${NAMESPACE}
+    name: prometheus
+  spec:
+    serviceAccountName: prometheus-k8s
+    # namespaceSelector:
+    #   any: true
+    serviceMonitorSelector:
+      matchLabels:
+        name: host-operator
+    resources:
+      requests:
+        memory: 400Mi
+    enableAdminAPI: false
+    portName: unsecured
+    containers:
+    - name: kube-rbac-proxy
+      # same as `pod/prometheus-k8s-0` in `openshift-monitoring` ns
+      # image:  quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:c75977f28becdf4f7065cfa37233464dd31208b1767e620c4f19658f53f8ff8c
+      image:  quay.io/brancz/kube-rbac-proxy:v0.8.0 # upstream repo
+      imagePullPolicy: IfNotPresent
+      ports:
+      - containerPort: 9092
+        name: secured
+        resources:
+          requests:
+            cpu: 1m
+            memory: 20Mi
+      args:
+      - --secure-listen-address=0.0.0.0:9092
+      - --upstream=http://127.0.0.1:9090
+      - --tls-cert-file=/etc/tls/private/tls.crt
+      - --tls-private-key-file=/etc/tls/private/tls.key
+      - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+      - --logtostderr=true
+      - --v=10
+      volumeMounts:
+      - mountPath: /etc/tls/private
+        name: secret-prometheus-tls
+    volumes:
+    - name: secret-prometheus-tls
+      secret:
+        secretName: prometheus-tls
+
+# Service to the Prometheus deployment (via the kube-rbac-proxy sidecar container)
+- apiVersion: v1
+  kind: Service
+  metadata:
+    namespace: ${NAMESPACE}
+    name: prometheus-operated-secured
+    annotations:
+      service.alpha.openshift.io/serving-cert-secret-name: prometheus-tls
+  spec:
+    ports:
+    - name: prometheus-operated-secured
+      port: 8443
+      targetPort: 9092
+    selector:
+      app: prometheus
+
+# Route to the Prometheus (via the kube-rbac-proxy sidecar container)
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    namespace: ${NAMESPACE}
+    name: prometheus
+  spec:
+    to:
+      kind: Service
+      name: prometheus-operated-secured
+    tls:
+      termination: reencrypt
+      insecureEdgeTerminationPolicy: Redirect

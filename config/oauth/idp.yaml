@@ -5,7 +5,7 @@ metadata:
   name: cluster
 spec:
   identityProviders:
-  - mappingMethod: lookup
+  - mappingMethod: ${MAPPING}
     name: ${IDENTITY_PROVIDER}
     openID:
       claims:

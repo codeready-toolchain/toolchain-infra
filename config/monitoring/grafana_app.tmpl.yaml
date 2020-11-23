@@ -1,0 +1,239 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: grafana-app-template
+  annotations:
+    tags: "grafana,monitoring"
+labels:
+  # will be applied on all objects defined below
+  app: grafana 
+parameters:
+- name: NAMESPACE
+  description: The namespace in which to create these Grafana resources
+  required: true
+- name: NAME
+  description: The name to use for these resources to create
+  value: grafana
+- name: SA_NAME
+  description: The name of the Service Account 
+  required: true
+- name: THANOS_QUERIER_URL_HOST
+  description: the URL to the Thanos Querier instance on the Host Cluster
+  required: true
+- name: PROMETHEUS_OPERATED_URL_HOST
+  description: the URL to the Prometheus operated instance on the Host Cluster
+  required: true
+- name: BEARER_TOKEN_HOST
+  description: The bearer token to authenticate to Thanos Querier on the Host Cluster
+  required: true
+- name: THANOS_QUERIER_URL_MEMBER
+  description: the URL to the Thanos Querier instance on the Member Cluster
+  required: true
+- name: BEARER_TOKEN_MEMBER
+  description: The bearer token to authenticate to Thanos Querier on the Member Cluster
+  required: true
+
+objects:
+
+# Route to the Grafana Service 
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    namespace: ${NAMESPACE}
+    name: ${NAME}
+  spec:
+    to:
+      name: ${NAME}
+    tls:
+      termination: Reencrypt
+
+# Service to the Grafana deployment (via the oauth-proxy sidecar container)
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${NAME}
+    namespace: ${NAMESPACE}
+    annotations:
+      service.alpha.openshift.io/serving-cert-secret-name: grafana-tls
+  spec:
+    ports:
+    - name: grafana
+      port: 443
+      targetPort: 8443
+    selector:
+      app: ${NAME}
+
+# Deploy Grafana with an oauth-proxy sidecar container
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    namespace: ${NAMESPACE}
+    name: ${NAME}
+    labels:
+      app: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: ${NAME}
+    template:
+      metadata:
+        namespace: ${NAMESPACE}
+        name: ${NAME}
+        labels:
+          app: ${NAME}
+      spec:
+        serviceAccountName: ${SA_NAME}
+        containers:
+        - name: oauth-proxy
+          image: openshift/oauth-proxy:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8443
+            name: public
+          args:
+          - --https-address=:8443
+          - --provider=openshift
+          - --openshift-service-account=${SA_NAME}
+          - --upstream=http://localhost:3000
+          - --tls-cert=/etc/tls/private/tls.crt
+          - --tls-key=/etc/tls/private/tls.key
+          - --cookie-secret=SECRET
+          - --pass-basic-auth=true
+          volumeMounts:
+          - mountPath: /etc/tls/private
+            name: grafana-tls
+        - image: docker.io/grafana/grafana:7.3.0
+          imagePullPolicy: Always
+          name: grafana
+          env:
+          - name: GF_AUTH_BASIC_ENABLED
+            value: 'false'
+          - name: GF_AUTH_PROXY_ENABLED
+            value: 'true'
+          - name: GF_AUTH_PROXY_HEADER_NAME
+            value: 'X-Forwarded-User'
+          - name: GF_AUTH_PROXY_HEADER_PROPERTY
+            value: 'username'
+          - name: GF_AUTH_PROXY_AUTO_SIGN_UP
+            value: 'true'
+          - name: GF_AUTH_PROXY_ENABLE_LOGIN_TOKEN
+            value: 'true'
+          - name: GF_AUTH_DISABLE_LOGIN_FORM
+            value: 'false'
+          - name: GF_USERS_ALLOW_SIGN_UP
+            value: 'false'
+          - name: GF_USERS_DEFAULT_THEME
+            value: 'light'
+          - name: GF_SECURITY_ADMIN_USER
+            value: 'xcoulon'
+          - name: GF_PATHS_CONFIG # see https://grafana.com/docs/grafana/latest/administration/configure-docker/#default-paths
+            value: '/etc/grafana/grafana.ini'
+          - name: GF_PATHS_PROVISIONING # see https://grafana.com/docs/grafana/latest/administration/configure-docker/#default-paths
+            value: '/etc/grafana/provisioning'
+          ports:
+          - containerPort: 3000
+            name: http
+            protocol: TCP
+          resources: {}
+          securityContext: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/grafana/provisioning/datasources
+            name: grafana-prometheus-ds
+          - mountPath: /etc/grafana/provisioning/dashboards
+            name: grafana-dashboards
+          - mountPath: /var/lib/grafana/dashboards
+            name: grafana-sandbox-dashboard
+        volumes:
+          - name: grafana-tls
+            secret:
+              secretName: grafana-tls
+          - name: grafana-prometheus-ds
+            configMap:
+              name: grafana-prometheus-ds
+          - name: grafana-dashboards
+            configMap:
+              name: grafana-dashboards
+          - name: grafana-sandbox-dashboard
+            configMap:
+              name: grafana-sandbox-dashboard
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 60
+
+# ConfigMap to specify the connection to Prometheus
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    namespace: ${NAMESPACE}
+    name: grafana-prometheus-ds
+  data:
+    user-workload-monitoring.prometheus.yaml: |
+      apiVersion: 1
+      datasources:
+      - name: Host Cluster/Thanos Querier
+        orgId: 1
+        version: 1
+        type: prometheus
+        access: proxy
+        url: ${THANOS_QUERIER_URL_HOST}
+        basicAuth: false
+        withCredentials: true
+        isDefault: false
+        jsonData:
+          httpHeaderName1: 'Authorization'
+          timeInterval: 5s
+          tlsSkipVerify: true
+        secureJsonData:
+          httpHeaderValue1: 'Bearer ${BEARER_TOKEN_HOST}'
+      - name: Host Cluster/Prometheus Operated
+        orgId: 1
+        version: 1
+        type: prometheus
+        access: proxy
+        url: ${PROMETHEUS_OPERATED_URL_HOST}
+        basicAuth: false
+        withCredentials: true
+        isDefault: false
+        jsonData:
+          httpHeaderName1: 'Authorization'
+          timeInterval: 5s
+          tlsSkipVerify: true
+        secureJsonData:
+          httpHeaderValue1: 'Bearer ${BEARER_TOKEN_HOST}'
+      - name: Member Cluster/Thanos Querier
+        orgId: 1
+        version: 1
+        type: prometheus
+        access: proxy
+        url: ${THANOS_QUERIER_URL_MEMBER}
+        basicAuth: false
+        withCredentials: true
+        isDefault: false
+        jsonData:
+          httpHeaderName1: 'Authorization'
+          timeInterval: 5s
+          tlsSkipVerify: true
+        secureJsonData:
+          httpHeaderValue1: 'Bearer ${BEARER_TOKEN_MEMBER}'
+      
+
+# ConfigMap to the Dashboards and where to store them 
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    namespace: ${NAMESPACE}
+    name: grafana-dashboards
+  data:
+    default.yaml: |
+      apiVersion: 1
+      providers:
+        - name: Default     # A uniquely identifiable name for the provider
+          folder:           # The default folder
+          type: file
+          options:
+            path: /var/lib/grafana/dashboards
