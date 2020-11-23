@@ -2,6 +2,8 @@ kind: Namespace
 apiVersion: v1
 metadata:
   name: toolchain-che
+  labels:
+    network.openshift.io/policy-group: ingress
 spec: {}
 ---
 apiVersion: operators.coreos.com/v1
