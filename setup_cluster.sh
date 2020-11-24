@@ -84,15 +84,7 @@ function deploy_operators() {
       export $CONSOLE_ROUTE_NAME="console"
       echo "setting up default CONSOLE_ROUTE_NAME i.e. $CONSOLE_ROUTE_NAME "
     fi
-    if [[ -z ${CHE_NAMESPACE} ]]; then
-      export $CHE_NAMESPACE="toolchain-che"
-      echo "setting up default CHE_NAMESPACE i.e. $CHE_NAMESPACE "
-    fi
-    if [[ -z ${CHE_ROUTE_NAME} ]]; then
-      export $CHE_ROUTE_NAME="che"
-      echo "setting up default CHE_ROUTE_NAME i.e. $CHE_ROUTE_NAME "
-    fi
-    REGISTRATION_SERVICE_URL=$REGISTRATION_SERVICE_URL CONSOLE_NAMESPACE=$CONSOLE_NAMESPACE CONSOLE_ROUTE_NAME=$CONSOLE_ROUTE_NAME CHE_NAMESPACE=$CHE_NAMESPACE CHE_ROUTE_NAME=$CHE_ROUTE_NAME NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/host_operator_config.yaml | oc apply -f -
+    REGISTRATION_SERVICE_URL=$REGISTRATION_SERVICE_URL CONSOLE_NAMESPACE=$CONSOLE_NAMESPACE CONSOLE_ROUTE_NAME=$CONSOLE_ROUTE_NAME NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/host_operator_config.yaml | oc apply -f -
     NAME=host-operator OPERATOR_NAME=toolchain-host-operator NAMESPACE=$HOST_OPERATOR_NS envsubst < ./config/operator_deploy.yaml | oc apply -f -
     oc apply -f ./config/reg_service_route.yaml
   else
@@ -128,16 +120,16 @@ function setup_autoscaler() {
 
 function setup_tools_operators() {
   if [[ ${CLUSTER_TYPE} == "member" ]]; then
-    # Che
+    # CRW
     # namespace, operator-group, subscription
-    oc apply -f ./config/operators/che/subscription.yaml
+    oc apply -f ./config/operators/crw/subscription.yaml
     while [[ "checlusters.org.eclipse.che" != $(oc get crd checlusters.org.eclipse.che -o jsonpath='{.metadata.name}' 2>/dev/null) ]]; do
       echo "waiting for CheCluster CRD to be available..."
       sleep 1
     done
     # CheCluster
-    oc apply -f ./config/operators/che/che_cluster.yaml
-    echo "Che operator installed"
+    oc apply -f ./config/operators/crw/crw.yaml
+    echo "CRW operator installed"
 
     # Pipelines
     # subscription
@@ -161,7 +153,7 @@ function setup_tools_operators() {
     echo "OpenShift Serverless operator installed"
 
     # Swich to Manual
-    oc patch subscription eclipse-che -n toolchain-che -p '{"spec":{"installPlanApproval":"Manual"}}' --type=merge
+    oc patch subscription codeready-workspaces -n codeready-workspaces-operator -p '{"spec":{"installPlanApproval":"Manual"}}' --type=merge
     oc patch subscription serverless-operator -n openshift-operators -p '{"spec":{"installPlanApproval":"Manual"}}' --type=merge
     oc patch subscription openshift-pipelines-operator -n openshift-operators -p '{"spec":{"installPlanApproval":"Manual"}}' --type=merge
   fi
