@@ -2,6 +2,8 @@ kind: Namespace
 apiVersion: v1
 metadata:
   name: codeready-workspaces-operator
+  labels:
+    network.openshift.io/policy-group: codeready-workspaces
 spec: {}
 ---
 apiVersion: operators.coreos.com/v1
