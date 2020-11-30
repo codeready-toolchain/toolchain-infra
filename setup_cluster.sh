@@ -93,6 +93,7 @@ function deploy_operators() {
       export IDENTITY_PROVIDER="rhd"
       echo "setting up default IDENTITY_PROVIDER i.e. $IDENTITY_PROVIDER for identity provider configuration"
     fi
+    CHE_ADMIN_USERNAME=$CHE_ADMIN_USERNAME CHE_ADMIN_PASSWORD=$CHE_ADMIN_PASSWORD NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/member_operator_secret.yaml | oc apply -f -
     IDENTITY_PROVIDER=$IDENTITY_PROVIDER NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/member_operator_config.yaml | oc apply -f -
     NAME=member-operator OPERATOR_NAME=toolchain-member-operator NAMESPACE=$MEMBER_OPERATOR_NS envsubst < ./config/operator_deploy.yaml | oc apply -f -
   fi
