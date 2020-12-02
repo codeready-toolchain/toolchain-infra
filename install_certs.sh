@@ -71,12 +71,14 @@ function install_cert() {
 }
 
 function install_cert_in_host() {
+  echo "Installing cert in host..."
   CLUSTER="host"
   login_to_cluster
   install_cert
 }
 
 function install_cert_in_member() {
+  echo "Installing cert in member..."
   CLUSTER="member"
   login_to_cluster
   install_cert
