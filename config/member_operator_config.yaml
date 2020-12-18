@@ -7,5 +7,5 @@ type: Opaque
 data:
   che.namespace: "codeready-workspaces-operator"
   che.route.name: "codeready"
-  che.user.deletion.enabled: "true"
+  che.user_deletion_enabled: "true"
   identity.provider: ${IDENTITY_PROVIDER}
