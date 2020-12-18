@@ -9,4 +9,4 @@ data:
   console.namespace: ${CONSOLE_NAMESPACE)
   console.route.name: ${CONSOLE_ROUTE_NAME)
   deactivation-domains-excluded: '@redhat.com'
-  admin.email: devservices@redhat.com
+  admin.email: admin.notifications@sandbox.openshift.com
